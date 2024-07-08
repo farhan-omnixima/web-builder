@@ -1,4 +1,4 @@
-import { getSession } from "@/lib/auth";
+import { validateRequest } from "@/lib/auth";
 import { notFound, redirect } from "next/navigation";
 import Posts from "@/components/posts";
 import CreatePostButton from "@/components/create-post-button";
@@ -9,7 +9,7 @@ export default async function SitePosts({
 }: {
   params: { id: string };
 }) {
-  const session = await getSession();
+  const {user, session} = await validateRequest();
   if (!session) {
     redirect("/login");
   }
@@ -17,7 +17,7 @@ export default async function SitePosts({
     where: (sites, { eq }) => eq(sites.id, decodeURIComponent(params.id)),
   });
 
-  if (!data || data.userId !== session.user.id) {
+  if (!data || data.userId !== user.id) {
     notFound();
   }
 

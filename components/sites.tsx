@@ -1,4 +1,4 @@
-import { getSession } from "@/lib/auth";
+import { validateRequest } from "@/lib/auth";
 import db from "@/lib/db";
 import Image from "next/image";
 import { redirect } from "next/navigation";
@@ -6,14 +6,14 @@ import SiteCard from "./site-card";
 import { sites as allsites } from "@/lib/schema";
 
 export default async function Sites({ limit }: { limit?: number }) {
-  const session = await getSession();
+  const {user, session} = await validateRequest();
   if (!session) {
     redirect("/login");
   }
 
 
   const sites = await db.query.sites.findMany({
-    where: (sites, { eq }) => eq(sites.userId, session.user.id),
+    where: (sites, { eq }) => eq(sites.userId, user.id),
     orderBy: (sites, { asc }) => asc(sites.createdAt),
     ...(limit ? { limit } : {}),
   });

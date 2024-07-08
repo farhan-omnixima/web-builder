@@ -1,139 +1,166 @@
-import { getServerSession, type NextAuthOptions } from "next-auth";
-import GitHubProvider from "next-auth/providers/github";
+import { Lucia } from "lucia";
+import { DrizzleSQLiteAdapter } from "@lucia-auth/adapter-drizzle";
 import db from "./db";
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import { Adapter } from "next-auth/adapters";
-import { accounts, sessions, users, verificationTokens } from "./schema";
+import { cookies } from "next/headers";
+import { cache } from "react";
+import { SelectUser } from "./schema";
 
-const VERCEL_DEPLOYMENT = !!process.env.VERCEL_URL;
-export const authOptions: NextAuthOptions = {
-  providers: [
-    GitHubProvider({
-      clientId: process.env.AUTH_GITHUB_ID as string,
-      clientSecret: process.env.AUTH_GITHUB_SECRET as string,
-      profile(profile) {
-        return {
-          id: profile.id.toString(),
-          name: profile.name || profile.login,
-          gh_username: profile.login,
-          email: profile.email,
-          image: profile.avatar_url,
-        };
-      },
-    }),
-  ],
-  pages: {
-    signIn: `/login`,
-    verifyRequest: `/login`,
-    error: "/login", // Error code passed in query string as ?error=
-  },
-  adapter: DrizzleAdapter(db, {
-    usersTable: users,
-    accountsTable: accounts,
-    sessionsTable: sessions,
-    verificationTokensTable: verificationTokens,
-  }) as Adapter,
-  session: { strategy: "jwt" },
-  cookies: {
-    sessionToken: {
-      name: `${VERCEL_DEPLOYMENT ? "__Secure-" : ""}next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        // When working on localhost, the cookie domain must be omitted entirely (https://stackoverflow.com/a/1188145)
-        domain: VERCEL_DEPLOYMENT
-          ? `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`
-          : undefined,
-        secure: VERCEL_DEPLOYMENT,
-      },
+import type { Session, User } from "lucia";
+import { users, sessions } from "./schema";
+
+const adapter = new DrizzleSQLiteAdapter(db, sessions, users);
+
+interface ActionResult {
+  success: boolean;
+  message: string | null;
+}
+
+export const lucia = new Lucia(adapter, {
+  sessionCookie: {
+    expires: false,
+    attributes: {
+      secure: process.env.NODE_ENV === "production",
     },
   },
-  callbacks: {
-    jwt: async ({ token, user }) => {
-      if (user) {
-        token.user = user;
-      }
-      return token;
-    },
-    session: async ({ session, token }) => {
-      session.user = {
-        ...session.user,
-        // @ts-expect-error
-        id: token.sub,
-        // @ts-expect-error
-        username: token?.user?.username || token?.user?.gh_username,
+  getUserAttributes: (attributes) => {
+    return {
+      id: attributes.id,
+      name: attributes.name,
+      username: attributes.username,
+      gh_username: attributes.gh_username,
+      email: attributes.email,
+      emailVerified: attributes.emailVerified,
+      role: attributes.role,
+      image: attributes.image,
+      hasPassword: attributes.hashedPassword ? true : false,
+    };
+  },
+});
+
+declare module "lucia" {
+  interface Register {
+    Lucia: typeof lucia;
+    DatabaseUserAttributes: SelectUser & { hasPassword: boolean };
+  }
+}
+
+export const validateRequest = cache(
+  async (): Promise<
+    { user: User; session: Session } | { user: null; session: null }
+  > => {
+    const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
+    if (!sessionId) {
+      return {
+        user: null,
+        session: null,
       };
-      return session;
-    },
+    }
+    const result = await lucia.validateSession(sessionId);
+    try {
+      if (result.session && result.session.fresh) {
+        const sessionCookie = lucia.createSessionCookie(result.session.id);
+        cookies().set(
+          sessionCookie.name,
+          sessionCookie.value,
+          sessionCookie.attributes,
+        );
+      }
+      if (!result.session) {
+        const sessionCookie = lucia.createBlankSessionCookie();
+        cookies().set(
+          sessionCookie.name,
+          sessionCookie.value,
+          sessionCookie.attributes,
+        );
+      }
+    } catch {}
+    return result;
   },
+);
+
+export const signOut = async (): Promise<ActionResult> => {
+  const { session } = await validateRequest();
+  if (!session) {
+    return {
+      success: false,
+      message: "Unauthorized",
+    };
+  }
+  try {
+    await lucia.invalidateSession(session.id);
+    const sessionCookie = lucia.createBlankSessionCookie();
+    cookies().set(
+      sessionCookie.name,
+      sessionCookie.value,
+      sessionCookie.attributes,
+    );
+    return {
+      success: true,
+      message: "",
+    };
+  } catch (e) {
+    return {
+      success: false,
+      message: "Unknown error encountered.",
+    };
+  }
 };
 
-export function getSession() {
-  return getServerSession(authOptions) as Promise<{
-    user: {
-      id: string;
-      name: string;
-      username: string;
-      email: string;
-      image: string;
-    };
-  } | null>;
-}
 
 export function withSiteAuth(action: any) {
-  return async (
-    formData: FormData | null,
-    siteId: string,
-    key: string | null,
-  ) => {
-    const session = await getSession();
-    if (!session) {
-      return {
-        error: "Not authenticated",
-      };
-    }
-
-    const site = await db.query.sites.findFirst({
-      where: (sites, { eq }) => eq(sites.id, siteId),
-    });
-
-    if (!site || site.userId !== session.user.id) {
-      return {
-        error: "Not authorized",
-      };
-    }
-
-    return action(formData, site, key);
-  };
-}
-
-export function withPostAuth(action: any) {
-  return async (
-    formData: FormData | null,
-    postId: string,
-    key: string | null,
-  ) => {
-    const session = await getSession();
-    if (!session?.user.id) {
-      return {
-        error: "Not authenticated",
-      };
-    }
-
-    const post = await db.query.posts.findFirst({
-      where: (posts, { eq }) => eq(posts.id, postId),
-      with: {
-        site: true,
-      },
-    });
-
-    if (!post || post.userId !== session.user.id) {
-      return {
-        error: "Post not found",
-      };
-    }
-
-    return action(formData, post, key);
-  };
-}
+    return async (
+      formData: FormData | null,
+      siteId: string,
+      key: string | null,
+    ) => {
+      const {user, session} = await validateRequest();
+      if (!session) {
+        return {
+          error: "Not authenticated",
+        };
+      }
+  
+      const site = await db.query.sites.findFirst({
+        where: (sites, { eq }) => eq(sites.id, siteId),
+      });
+  
+      if (!site || site.userId !== user.id) {
+        return {
+          error: "Not authorized",
+        };
+      }
+  
+      return action(formData, site, key);
+    };
+  }
+  
+  export function withPostAuth(action: any) {
+    return async (
+      formData: FormData | null,
+      postId: string,
+      key: string | null,
+    ) => {
+      const {user, session} = await validateRequest();
+      if (!session || !user.id) {
+        return {
+          error: "Not authenticated",
+        };
+      }
+  
+      const post = await db.query.posts.findFirst({
+        where: (posts, { eq }) => eq(posts.id, postId),
+        with: {
+          site: true,
+        },
+      });
+  
+      if (!post || post.userId !== user.id) {
+        return {
+          error: "Post not found",
+        };
+      }
+  
+      return action(formData, post, key);
+    };
+  }
+  

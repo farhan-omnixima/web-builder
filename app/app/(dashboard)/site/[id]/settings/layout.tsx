@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { getSession } from "@/lib/auth";
+import { validateRequest } from "@/lib/auth";
 import { notFound, redirect } from "next/navigation";
 import SiteSettingsNav from "./nav";
 import db from "@/lib/db";
@@ -11,7 +11,7 @@ export default async function SiteAnalyticsLayout({
   params: { id: string };
   children: ReactNode;
 }) {
-  const session = await getSession();
+  const {user, session} = await validateRequest();
   if (!session) {
     redirect("/login");
   }
@@ -19,7 +19,7 @@ export default async function SiteAnalyticsLayout({
     where: (sites, { eq }) => eq(sites.id, decodeURIComponent(params.id)),
   });
 
-  if (!data || data.userId !== session.user.id) {
+  if (!data || data.userId !== user.id) {
     notFound();
   }
 

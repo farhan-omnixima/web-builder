@@ -1,4 +1,5 @@
-import { getSession } from "@/lib/auth";
+import { validateRequest } from "@/lib/auth";
+
 import { notFound, redirect } from "next/navigation";
 import AnalyticsMockup from "@/components/analytics";
 import db from "@/lib/db";
@@ -8,7 +9,7 @@ export default async function SiteAnalytics({
 }: {
   params: { id: string };
 }) {
-  const session = await getSession();
+  const {user, session} = await validateRequest();
   if (!session) {
     redirect("/login");
   }
@@ -16,7 +17,7 @@ export default async function SiteAnalytics({
     where: (sites, { eq }) => eq(sites.id, decodeURIComponent(params.id)),
   });
 
-  if (!data || data.userId !== session.user.id) {
+  if (!data || data.userId !== user.id) {
     notFound();
   }
 

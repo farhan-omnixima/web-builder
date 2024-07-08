@@ -1,5 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
-import { PgSelect } from "drizzle-orm/pg-core";
+import { SQLiteSelect } from "drizzle-orm/sqlite-core";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -59,7 +59,7 @@ export const random = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-export function withLimit<T extends PgSelect>(qb: T, limit: number) {
+export function withLimit<T extends SQLiteSelect>(qb: T, limit: number) {
   return qb.limit(limit);
 }
 

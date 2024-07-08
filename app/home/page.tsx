@@ -1,5 +1,6 @@
 import { InlineSnippet } from "@/components/form/domain-configuration";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function HomePage() {
   return (
@@ -11,12 +12,17 @@ export default function HomePage() {
         alt="Platforms on Vercel"
         className="w-48"
       />
-      <h1 className="text-white">
-        Edit this page on{" "}
-        <InlineSnippet className="ml-2 bg-blue-900 text-blue-100">
-          app/home/page.tsx
-        </InlineSnippet>
-      </h1>
+      <h1 className="text-3xl font-bold text-white">Welcome to Platforms</h1>
+      <p className="text-white">
+        A platform to help you build and deploy your projects.
+      </p>
+      
+      <Link
+        href="/login"
+        className="bg-white text-black px-4 py-2 rounded-lg"
+      >
+        Get Started
+      </Link>
     </div>
   );
 }

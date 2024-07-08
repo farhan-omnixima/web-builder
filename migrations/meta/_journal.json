@@ -15,6 +15,41 @@
       "when": 1720347654357,
       "tag": "0001_dashing_lockjaw",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1720414923612,
+      "tag": "0002_ambiguous_daredevil",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1720416860847,
+      "tag": "0003_brave_loa",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1720416971584,
+      "tag": "0004_watery_thanos",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1720417333129,
+      "tag": "0005_sudden_lila_cheney",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1720418856140,
+      "tag": "0006_flimsy_rick_jones",
+      "breakpoints": true
     }
   ]
 }

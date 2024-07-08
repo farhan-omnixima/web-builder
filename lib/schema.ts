@@ -1,4 +1,4 @@
-import { createId } from "@paralleldrive/cuid2";
+import { generateId } from "lucia";
 import {sql, relations } from "drizzle-orm";
 import {
   index,
@@ -13,14 +13,17 @@ export const defaultTimestamp = sql`(strftime('%s', 'now') * 1000)`;
 
 export const users = sqliteTable("users", {
   id: text("id")
+    .notNull()
     .primaryKey()
-    .$defaultFn(() => createId()),
+    .$defaultFn(() => generateId(16)),
   name: text("name"),
   // if you are using Github OAuth, you can get rid of the username attribute (that is for Twitter OAuth)
-  username: text("username"),
+  username: text("username").notNull().unique(),
   gh_username: text("gh_username"),
   email: text("email").notNull().unique(),
-  emailVerified: integer("emailVerified", { mode: "timestamp_ms" }),
+  emailVerified: integer("emailVerified", { mode: "boolean" }).default(false),
+  hashedPassword: text("hashedPassword"),
+  role: text("role").default("user").notNull(),
   image: text("image"),
   createdAt: integer("createdAt", { mode: "timestamp_ms" }).notNull().default(defaultTimestamp),
   updatedAt: integer("updatedAt", { mode: "timestamp_ms" }).notNull().default(defaultTimestamp),
@@ -29,11 +32,11 @@ export const users = sqliteTable("users", {
 export const sessions = sqliteTable(
   "sessions",
   {
-    sessionToken: text("sessionToken").primaryKey(),
+    id: text("id").notNull().primaryKey(),
     userId: text("userId")
       .notNull()
       .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
-    expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
+    expiresAt: integer("expiresAt").notNull(),
   },
   (table) => {
     return {
@@ -101,7 +104,7 @@ export const sites = sqliteTable(
   {
     id: text("id")
       .primaryKey()
-      .$defaultFn(() => createId()),
+      .$defaultFn(() => generateId(16)),
     name: text("name"),
     description: text("description"),
     logo: text("logo").default(
@@ -142,13 +145,13 @@ export const posts = sqliteTable(
   {
     id: text("id")
       .primaryKey()
-      .$defaultFn(() => createId()),
+      .$defaultFn(() => generateId(16)),
     title: text("title"),
     description: text("description"),
     content: text("content"),
     slug: text("slug")
       .notNull()
-      .$defaultFn(() => createId()),
+      .$defaultFn(() => generateId(16)),
     image: text("image").default(
       "https://public.blob.vercel-storage.com/eEZHAoPTOBSYGBE3/hxfcV5V-eInX3jbVUhjAt1suB7zB88uGd1j20b.png",
     ),
@@ -205,6 +208,10 @@ export const userRelations = relations(users, ({ many }) => ({
   posts: many(posts),
 }));
 
+export type SelectUser = typeof users.$inferSelect;
+export type SelectSession = typeof sessions.$inferSelect;
+export type SelectAccount = typeof accounts.$inferSelect;
+export type SelectVerificationToken = typeof verificationTokens.$inferSelect;
 export type SelectSite = typeof sites.$inferSelect;
 export type SelectPost = typeof posts.$inferSelect;
 export type SelectExample = typeof examples.$inferSelect;
