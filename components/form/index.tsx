@@ -10,6 +10,8 @@ import DomainStatus from "./domain-status";
 import DomainConfiguration from "./domain-configuration";
 import Uploader from "./uploader";
 import va from "@vercel/analytics";
+import { DatabaseSession } from "lucia";
+import { useAuthProvider } from "@/app/context";
 
 export default function Form({
   title,
@@ -33,7 +35,7 @@ export default function Form({
 }) {
   const { id } = useParams() as { id?: string };
   const router = useRouter();
-  const { update } = useSession();
+  const { session } = useAuthProvider(); 
   return (
     <form
       action={async (data: FormData) => {

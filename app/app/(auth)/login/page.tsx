@@ -20,11 +20,6 @@ export default function LoginPage() {
     },
   });
 
-  const handleClick = async () => {
-    const response = await Test();
-    console.log(response);
-  }
-
   const onSubmit = (data: { email: string; password: string }) => {
     let redirect_url = "/";
     setIsLoggingIn(true);
@@ -32,95 +27,75 @@ export default function LoginPage() {
     auth.signIn(data.email, data.password, redirect_url);
     setIsLoggingIn(false);
   };
+
   return (
-    <div>
-      <div className="m-auto mx-auto px-12 xl:container sm:px-0">
-        <div className="mx-auto h-full">
-          <div className="m-auto py-12">
-            <button onClick={handleClick}>Test</button>
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="w-full max-w-md p-8 bg-white rounded-3xl shadow-lg dark:bg-gray-800">
+        <h3 className="text-center text-2xl font-bold text-gray-800 dark:text-white">
+          Login to your account
+        </h3>
 
-            <div className="mx-auto w-full max-w-md rounded-3xl border bg-white p-8 sm:p-10 dark:border-slate-700 dark:bg-black">
-              <h3 className="text-center text-2xl font-semibold text-slate-700 dark:text-white">
-                Login to your account
-              </h3>
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
+          <div className="flex flex-col space-y-4">
+            <div className="relative w-full">
+              <input
+                id="email"
+                type="email"
+                placeholder="Your email address"
+                className={`w-full border rounded-lg px-4 py-3 bg-transparent outline-none transition dark:border-gray-700 dark:text-gray-300 focus:border-sky-500 dark:focus:border-sky-500 ${
+                  errors.email ? "border-red-400" : ""
+                }`}
+                {...register("email", { required: "Email is required" })}
+              />
+              {errors.email && (
+                <p className="mt-2 text-xs text-red-600 dark:text-red-400">
+                  {errors.email?.message}
+                </p>
+              )}
+            </div>
 
-              <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="mt-12 space-y-6"
-              >
-                <div className="flex flex-col items-start">
-                  <div className="relative w-full before:absolute before:bottom-0 before:left-0 before:right-0 before:m-auto before:h-0.5 before:origin-right before:scale-x-0 before:bg-sky-400 before:transition before:duration-300 focus-within:before:origin-left focus-within:before:!scale-x-100 focus-within:invalid:before:bg-red-400 dark:before:bg-sky-800">
-                    <input
-                      id="email"
-                      type="email"
-                      placeholder="Your email address"
-                      className={`w-full border-b border-slate-300 bg-transparent pb-3 outline-none transition invalid:border-red-400 dark:border-slate-600 dark:placeholder-slate-300 ${
-                        errors.email ? "border-red-400" : ""
-                      }`}
-                      {...register("email", { required: "Email is required" })}
-                    />
-                  </div>
-                  {errors.email && (
-                    <p className="mt-2 text-xs text-red-600 dark:text-red-400">
-                      {errors.email?.message}
-                    </p>
-                  )}
-                </div>
+            <div className="relative w-full">
+              <input
+                id="password"
+                type="password"
+                placeholder="Your password"
+                className={`w-full border rounded-lg px-4 py-3 bg-transparent outline-none transition dark:border-gray-700 dark:text-gray-300 focus:border-sky-500 dark:focus:border-sky-500 ${
+                  errors.password ? "border-red-400" : ""
+                }`}
+                {...register("password", {
+                  required: "Password is required",
+                })}
+              />
+              {errors.password && (
+                <p className="mt-2 text-xs text-red-600 dark:text-red-400">
+                  {errors.password?.message}
+                </p>
+              )}
+            </div>
 
-                <div className="flex flex-col items-start">
-                  <div className="relative w-full before:absolute before:bottom-0 before:left-0 before:right-0 before:m-auto before:h-0.5 before:origin-right before:scale-x-0 before:bg-sky-400 before:transition before:duration-300 focus-within:before:origin-left focus-within:before:!scale-x-100 focus-within:invalid:before:bg-red-400 dark:before:bg-sky-800">
-                    <input
-                      id="password"
-                      type="password"
-                      placeholder="Your password"
-                      className={`w-full border-b border-slate-300 bg-transparent pb-3 outline-none transition invalid:border-red-400 dark:border-slate-600 dark:placeholder-slate-300 ${
-                        errors.password ? "border-red-400" : ""
-                      }`}
-                      {...register("password", {
-                        required: "Password is required",
-                      })}
-                    />
-                  </div>
-                  {errors.password && (
-                    <p className="mt-2 text-xs text-red-600 dark:text-red-400">
-                      {errors.password?.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="flex flex-col items-end">
-                  <Link
-                    href="/forgot-password"
-                    type="button"
-                    className="-mb-4 -mt-5 block w-max p-3"
-                  >
-                    <span className="text-sm tracking-wide text-sky-600 dark:text-sky-400">
-                      Forgot password?
-                    </span>
-                  </Link>
-                </div>
-
-                <div className="text-center ">
-                  <button
-                    type="submit"
-                    className="bg-primary dark:bg-primary hover:bg-primary/80 focus:bg-primary/80 flex h-11 w-full items-center justify-center rounded-full border px-6 py-3 transition hover:cursor-pointer disabled:pointer-events-none disabled:opacity-50"
-                    disabled={isLoggingIn}
-                  >
-                    <span className="text-base font-semibold text-white">
-                      {isLoggingIn ? "Logging in..." : "Login"}
-                    </span>
-                  </button>
-                  <Link
-                    href="/register"
-                    className="mt-3 block text-sm tracking-wide text-sky-600 dark:text-sky-400"
-                  >
-                    Create new account
-                  </Link>
-                </div>
-              </form>
+            <div className="flex justify-end">
+              <Link href="/forgot-password" className="text-sm text-sky-600 dark:text-sky-400 hover:underline">
+                Forgot password?
+              </Link>
             </div>
           </div>
-        </div>
+
+          <div className="mt-8">
+            <button
+              type="submit"
+              className="w-full py-3 text-lg font-semibold text-white bg-sky-600 rounded-full transition hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none"
+              disabled={isLoggingIn}
+            >
+              {isLoggingIn ? "Logging in..." : "Login"}
+            </button>
+            <Link
+              href="/register"
+              className="block mt-4 text-center text-sm text-sky-600 dark:text-sky-400 hover:underline"
+            >
+              Create new account
+            </Link>
+          </div>
+        </form>
       </div>
     </div>
   );

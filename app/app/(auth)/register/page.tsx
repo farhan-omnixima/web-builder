@@ -20,8 +20,6 @@ const Register = () => {
     return sign + hours + ":" + minutes;
   };
 
-  console.log("Register Page");
-
   const {
     register,
     handleSubmit,
@@ -46,126 +44,109 @@ const Register = () => {
   };
 
   return (
-    <div className="bg-primary/10 dark:bg-slate-800">
-      <div className="m-auto mx-auto px-12 xl:container sm:px-0">
-        <div className="mx-auto h-full">
-          <div className="m-auto py-12">
-            <div className="mx-auto w-full max-w-md rounded-3xl border bg-white p-8 sm:p-10 dark:border-slate-700 dark:bg-black">
-              <h3 className="text-center text-2xl font-semibold text-slate-700 dark:text-white">
-                Create an Account
-              </h3>
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="w-full max-w-md p-8 bg-white rounded-3xl shadow-lg dark:bg-gray-800">
+        <h3 className="text-center text-2xl font-bold text-gray-800 dark:text-white">
+          Create an Account
+        </h3>
 
-              <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="mt-12 space-y-6"
-              >
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="flex flex-col">
-                    <div className="relative before:absolute before:bottom-0 before:left-0 before:right-0 before:m-auto before:h-0.5 before:origin-right before:scale-x-0 before:bg-sky-400 before:transition before:duration-300 focus-within:before:origin-left focus-within:before:!scale-x-100 focus-within:invalid:before:bg-red-400 dark:before:bg-sky-800">
-                      <input
-                        id="name"
-                        type="text"
-                        placeholder="First Name"
-                        className={`w-full border-b border-slate-300 bg-transparent pb-3 outline-none transition invalid:border-red-400 dark:border-slate-600 dark:placeholder-slate-300 ${
-                          errors.name ? "border-red-400" : ""
-                        }`}
-                        {...register("name", {
-                          required: "First Name is required",
-                        })}
-                      />
-                    </div>
-                    {errors.name && (
-                      <p className="mt-2 text-xs text-red-600 dark:text-red-400">
-                        {errors.name?.message}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex flex-col">
-                    <div className="relative before:absolute before:bottom-0 before:left-0 before:right-0 before:m-auto before:h-0.5 before:origin-right before:scale-x-0 before:bg-sky-400 before:transition before:duration-300 focus-within:before:origin-left focus-within:before:!scale-x-100 focus-within:invalid:before:bg-red-400 dark:before:bg-sky-800">
-                      <input
-                        id="username"
-                        type="text"
-                        placeholder="Last Name"
-                        className={`w-full border-b border-slate-300 bg-transparent pb-3 outline-none transition invalid:border-red-400 dark:border-slate-600 dark:placeholder-slate-300 ${
-                          errors.username ? "border-red-400" : ""
-                        }`}
-                        {...register("username", {
-                          required: "Last Name is required",
-                        })}
-                      />
-                    </div>
-                    {errors.username && (
-                      <p className="mt-2 text-xs text-red-600 dark:text-red-400">
-                        {errors.username?.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
+          <div className="flex flex-col space-y-4">
+            <div className="relative w-full">
+              <input
+                id="name"
+                type="text"
+                placeholder="Name"
+                className={`w-full border rounded-lg px-4 py-3 bg-transparent outline-none transition dark:border-gray-700 dark:text-gray-300 focus:border-sky-500 dark:focus:border-sky-500 ${
+                  errors.name ? "border-red-400" : ""
+                }`}
+                {...register("name", {
+                  required: "Name is required",
+                })}
+              />
+              {errors.name && (
+                <p className="mt-2 text-xs text-red-600 dark:text-red-400">
+                  {errors.name?.message}
+                </p>
+              )}
+            </div>
 
-                <div className="flex flex-col">
-                  <div className="relative before:absolute before:bottom-0 before:left-0 before:right-0 before:m-auto before:h-0.5 before:origin-right before:scale-x-0 before:bg-sky-400 before:transition before:duration-300 focus-within:before:origin-left focus-within:before:!scale-x-100 focus-within:invalid:before:bg-red-400 dark:before:bg-sky-800">
-                    <input
-                      id="email"
-                      type="email"
-                      placeholder="Your email address"
-                      className={`w-full border-b border-slate-300 bg-transparent pb-3 outline-none transition invalid:border-red-400 dark:border-slate-600 dark:placeholder-slate-300 ${
-                        errors.email ? "border-red-400" : ""
-                      }`}
-                      {...register("email", { required: "Email is required" })}
-                    />
-                  </div>
-                  {errors.email && (
-                    <p className="mt-2 text-xs text-red-600 dark:text-red-400">
-                      {errors.email?.message}
-                    </p>
-                  )}
-                </div>
+            <div className="relative w-full">
+              <input
+                id="username"
+                type="text"
+                placeholder="Username"
+                className={`w-full border rounded-lg px-4 py-3 bg-transparent outline-none transition dark:border-gray-700 dark:text-gray-300 focus:border-sky-500 dark:focus:border-sky-500 ${
+                  errors.username ? "border-red-400" : ""
+                }`}
+                {...register("username", {
+                  required: "Username is required",
+                })}
+              />
+              {errors.username && (
+                <p className="mt-2 text-xs text-red-600 dark:text-red-400">
+                  {errors.username?.message}
+                </p>
+              )}
+            </div>
 
-                <div className="flex flex-col">
-                  <div className="relative w-full before:absolute before:bottom-0 before:left-0 before:right-0 before:m-auto before:h-0.5 before:origin-right before:scale-x-0 before:bg-sky-400 before:transition before:duration-300 focus-within:before:origin-left focus-within:before:!scale-x-100 focus-within:invalid:before:bg-red-400 dark:before:bg-sky-800">
-                    <input
-                      id="password"
-                      type="password"
-                      placeholder="Your password"
-                      className={`w-full border-b border-slate-300 bg-transparent pb-3 outline-none transition invalid:border-red-400 dark:border-slate-600 dark:placeholder-slate-300 ${
-                        errors.password ? "border-red-400" : ""
-                      }`}
-                      {...register("password", {
-                        required: "Password is required",
-                        minLength: {
-                          value: 8,
-                          message: "Password must have at least 8 characters",
-                        },
-                      })}
-                    />
-                  </div>
-                  {errors.password && (
-                    <p className="mt-2 text-xs text-red-600 dark:text-red-400">
-                      {errors.password?.message}
-                    </p>
-                  )}
-                </div>
+            <div className="relative w-full">
+              <input
+                id="email"
+                type="email"
+                placeholder="Your email address"
+                className={`w-full border rounded-lg px-4 py-3 bg-transparent outline-none transition dark:border-gray-700 dark:text-gray-300 focus:border-sky-500 dark:focus:border-sky-500 ${
+                  errors.email ? "border-red-400" : ""
+                }`}
+                {...register("email", { required: "Email is required" })}
+              />
+              {errors.email && (
+                <p className="mt-2 text-xs text-red-600 dark:text-red-400">
+                  {errors.email?.message}
+                </p>
+              )}
+            </div>
 
-                <div className="text-center">
-                  <button
-                    disabled={loading}
-                    className="bg-primary dark:bg-primary hover:bg-primary/80 focus:bg-primary/80 flex h-11 w-full items-center justify-center rounded-full px-6 py-3 transition disabled:pointer-events-none disabled:opacity-50"
-                  >
-                    <span className="text-base font-semibold text-white">
-                      {loading ? "Registering..." : "Register"}
-                    </span>
-                  </button>
-                  <Link
-                    href="/login"
-                    className="mt-3 block text-sm tracking-wide text-sky-600 dark:text-sky-400"
-                  >
-                    Login
-                  </Link>
-                </div>
-              </form>
+            <div className="relative w-full">
+              <input
+                id="password"
+                type="password"
+                placeholder="Your password"
+                className={`w-full border rounded-lg px-4 py-3 bg-transparent outline-none transition dark:border-gray-700 dark:text-gray-300 focus:border-sky-500 dark:focus:border-sky-500 ${
+                  errors.password ? "border-red-400" : ""
+                }`}
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 8,
+                    message: "Password must have at least 8 characters",
+                  },
+                })}
+              />
+              {errors.password && (
+                <p className="mt-2 text-xs text-red-600 dark:text-red-400">
+                  {errors.password?.message}
+                </p>
+              )}
             </div>
           </div>
-        </div>
+
+          <div className="mt-8">
+            <button
+              type="submit"
+              className="w-full py-3 text-lg font-semibold text-white bg-sky-600 rounded-full transition hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none"
+              disabled={loading}
+            >
+              {loading ? "Registering..." : "Register"}
+            </button>
+            <Link
+              href="/login"
+              className="block mt-4 text-center text-sm text-sky-600 dark:text-sky-400 hover:underline"
+            >
+              Login
+            </Link>
+          </div>
+        </form>
       </div>
     </div>
   );

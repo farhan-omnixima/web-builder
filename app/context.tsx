@@ -198,31 +198,6 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     setIsSigningOut(false);
   };
 
-//   const sendVerificationEmail = async () => {
-//     if (!user) return { success: false, message: "User not found." };
-//     const verificationToast = toast.loading("Sending verification email...");
-//     const verificationResponse = await sendUserVerificationEmail(
-//       user.email,
-//       user.firstname || user.name,
-//       user.id,
-//     );
-
-//     if (verificationResponse.success) {
-//       localStorage.setItem("verification_email_sent", Date.now().toString());
-//       toast.success("Verification email sent.", {
-//         id: verificationToast,
-//       });
-//     } else {
-//       toast.error(
-//         "Failed to send verification email: " + verificationResponse.message,
-//         {
-//           id: verificationToast,
-//         },
-//       );
-//     }
-//     return verificationResponse;
-//   };
-
   const redirectToDashboard = useCallback(() => {
     toast.success("Welcome back!");
     // When the user is already signed in, user will be redirected to localhost:3000 to app.localhost:3000/
@@ -242,9 +217,6 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setIsAuthenticated(true);
         let loggeduser = user;
         if (!user.image) {
-        //   loggeduser["image"] = await image(user.email, {
-        //     defaultImage: "mp",
-        //   });
             loggeduser["image"] = "No Image";
         }
         setUser(user);
@@ -273,40 +245,40 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     };
   }, []);
 
-  useEffect(() => {
-    if (initAuth) {
-      const isOnDashboard = pathname.startsWith("/");
-      const isOnAuthPage = pathname === "/login"; //auth
-      const continueParamFailed = queryParams.get("continue") === "failed";
+  // useEffect(() => {
+  //   if (initAuth) {
+  //     const isOnDashboard = pathname.startsWith("/");
+  //     const isOnAuthPage = pathname === "/login"; //auth
+  //     const continueParamFailed = queryParams.get("continue") === "failed";
 
-      if (user?.id) {
-        if (isOnAuthPage && return_uri) {
-          router.push(
-            `/api/auth/consent?return_uri=${encodeURIComponent(return_uri)}`,
-          );
-        } else if (isOnAuthPage) {
-          redirectToDashboard();
-        }
-      } else {
-        if (continueParamFailed) {
-          toast.error("Failed to continue with Google authentication.");
-        }
-        if (isOnDashboard) {
-          redirectToSignIn();
-        }
-      }
-    }
-  }, [
-    initAuth,
-    isAuthenticated,
-    session,
-    user,
-    router,
-    pathname,
-    return_uri,
-    action,
-    queryParams,
-  ]);
+  //     if (user?.id) {
+  //       if (isOnAuthPage && return_uri) {
+  //         router.push(
+  //           `/api/auth/consent?return_uri=${encodeURIComponent(return_uri)}`,
+  //         );
+  //       } else if (isOnAuthPage) {
+  //         redirectToDashboard();
+  //       }
+  //     } else {
+  //       if (continueParamFailed) {
+  //         toast.error("Failed to continue with Google authentication.");
+  //       }
+  //       if (isOnDashboard) {
+  //         redirectToSignIn();
+  //       }
+  //     }
+  //   }
+  // }, [
+  //   initAuth,
+  //   isAuthenticated,
+  //   session,
+  //   user,
+  //   router,
+  //   pathname,
+  //   return_uri,
+  //   action,
+  //   queryParams,
+  // ]);
 
   return (
     <AuthContext.Provider
@@ -327,7 +299,6 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
       {!initAuth ? (
         <>
           <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center gap-1 text-center">
-            {/* <Icons.spinner className="mr-2 h-4 w-4 animate-spin" /> */}
             Loading... 
           </div>
         </>
