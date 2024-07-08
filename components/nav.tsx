@@ -158,6 +158,7 @@ export default function Nav({ children }: { children: ReactNode }) {
   return (
     <>
       <button
+        title="Toggle Sidebar"
         className={`fixed z-20 ${
           // left align for Editor, right align for other pages
           segments[0] === "post" && segments.length === 2 && !showSidebar
@@ -175,7 +176,7 @@ export default function Nav({ children }: { children: ReactNode }) {
       >
         <div className="grid gap-2">
           <div className="flex items-center space-x-2 rounded-lg px-2 py-1.5">
-            <a
+            {/* <a
               href="https://vercel.com/templates/next.js/platforms-starter-kit"
               target="_blank"
               rel="noopener noreferrer"
@@ -193,8 +194,8 @@ export default function Nav({ children }: { children: ReactNode }) {
                   fill="currentColor"
                 />
               </svg>
-            </a>
-            <div className="h-6 rotate-[30deg] border-l border-stone-400 dark:border-stone-500" />
+            </a> 
+            <div className="h-6 rotate-[30deg] border-l border-stone-400 dark:border-stone-500" /> */}
             <Link
               href="/"
               className="rounded-lg p-2 hover:bg-stone-200 dark:hover:bg-stone-700"
@@ -224,7 +225,7 @@ export default function Nav({ children }: { children: ReactNode }) {
           </div>
         </div>
         <div>
-          <div className="grid gap-1">
+          {/* <div className="grid gap-1">
             {externalLinks.map(({ name, href, icon }) => (
               <a
                 key={name}
@@ -240,7 +241,7 @@ export default function Nav({ children }: { children: ReactNode }) {
                 <p>↗</p>
               </a>
             ))}
-          </div>
+          </div> */}
           <div className="my-2 border-t border-stone-200 dark:border-stone-700" />
           {children}
         </div>
