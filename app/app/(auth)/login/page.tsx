@@ -23,7 +23,6 @@ export default function LoginPage() {
   const onSubmit = (data: { email: string; password: string }) => {
     let redirect_url = "/";
     setIsLoggingIn(true);
-    console.log(data);
     auth.signIn(data.email, data.password, redirect_url);
     setIsLoggingIn(false);
   };

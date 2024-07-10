@@ -3,13 +3,14 @@ import { notFound, redirect } from "next/navigation";
 import Pages from "@/components/pages";
 import CreatePageButton from "@/components/create-page-button";
 import db from "@/lib/db";
+import SiteAnalytics from "./analytics/page";
 
-export default async function SitePages({
+export default async function SitePage({
   params,
 }: {
   params: { id: string };
 }) {
-  const {user, session} = await validateRequest();
+  const { user, session } = await validateRequest();
   if (!session) {
     redirect("/login");
   }
@@ -25,10 +26,10 @@ export default async function SitePages({
 
   return (
     <>
-      <div className="flex flex-col items-center justify-between space-y-4 sm:flex-row sm:space-y-0">
+      {/* <div className="flex flex-col items-center justify-between space-y-4 sm:flex-row sm:space-y-0">
         <div className="flex flex-col items-center space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0">
           <h1 className="w-60 truncate font-cal text-xl font-bold sm:w-auto sm:text-3xl dark:text-white">
-            All Pages of {data.name}
+            {data.name}
           </h1>
           <a
             href={
@@ -44,8 +45,9 @@ export default async function SitePages({
           </a>
         </div>
         <CreatePageButton />
-      </div>
-      <Pages siteId={decodeURIComponent(params.id)} />
+      </div> */}
+      {/* <Pages siteId={decodeURIComponent(params.id)} /> */}
+      <SiteAnalytics params={params} />
     </>
   );
 }

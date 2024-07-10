@@ -1,6 +1,5 @@
 "use client";
-import { ReactNode } from "react";
-import { Config, Data, Puck } from "@measured/puck";
+import { Data, Puck } from "@measured/puck";
 import "@measured/puck/puck.css";
 import { config } from "@/components/builder-components";
 

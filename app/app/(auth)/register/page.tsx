@@ -36,7 +36,6 @@ const Register = () => {
 
   const onSubmit = (data: any) => {
     setLoading(true);
-    console.log(data);
     let redirect_url = "/";
     const { name, username, email, password } = data;
     auth.signUp(email, password, name, username, redirect_url);
