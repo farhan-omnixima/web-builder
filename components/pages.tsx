@@ -2,9 +2,9 @@ import { validateRequest } from "@/lib/auth";
 import db from "@/lib/db";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import PostCard from "./post-card";
+import PageCard from "./page-card";
 
-export default async function Posts({
+export default async function Pages({
   siteId,
   limit,
 }: {
@@ -16,7 +16,7 @@ export default async function Posts({
     redirect("/login");
   }
 
-  const posts = await db.query.posts.findMany({
+  const pages = await db.query.posts.findMany({ //TODO: Change table name to pages
     where: (posts, { and, eq }) =>
       and(
         eq(posts.userId, user.id),
@@ -29,23 +29,23 @@ export default async function Posts({
     ...(limit ? { limit } : {}),
   });
 
-  return posts.length > 0 ? (
+  return pages.length > 0 ? (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      {posts.map((post) => (
-        <PostCard key={post.id} data={post} />
+      {pages.map((page) => (
+        <PageCard key={page.id} data={page} />
       ))}
     </div>
   ) : (
     <div className="flex flex-col items-center space-x-4">
-      <h1 className="font-cal text-4xl">No Posts Yet</h1>
+      <h1 className="font-cal text-4xl">No Pages Yet</h1>
       <Image
-        alt="missing post"
+        alt="missing page"
         src="https://illustrations.popsy.co/gray/graphic-design.svg"
         width={400}
         height={400}
       />
       <p className="text-lg text-stone-500">
-        You do not have any posts yet. Create one to get started.
+        You do not have any pages yet. Create one to get started.
       </p>
     </div>
   );

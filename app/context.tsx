@@ -11,11 +11,13 @@ import {
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { DatabaseSession, User } from "lucia";
+import { UpdateUser, updateUsers } from "./actions/user";
 
 interface AuthContextProps {
   isAuthenticated: boolean;
   checkAuthentication: (isMounted: boolean) => void;
   user: User | null;
+  updateUser: (updatedUser: UpdateUser) => Promise<UpdateUserResponse>;
   session: DatabaseSession | null;
   initAuth: boolean;
   signIn: (email: string, password: string, redirect_url?: string) => void;
@@ -51,10 +53,18 @@ interface SignUpResponse extends SignInResponse {}
 
 interface SignOutResponse extends GenericResponse {}
 
+interface UpdateUserResponse extends GenericResponse {}
+
 const AuthContext = createContext<AuthContextProps>({
   isAuthenticated: false,
   checkAuthentication: () => {},
   user: null,
+  updateUser: async (): Promise<UpdateUserResponse> => {
+    return Promise.resolve({
+      success: false,
+      message: "",
+    });
+  },
   session: null,
   initAuth: false,
   signIn: () => {},
@@ -71,12 +81,12 @@ const AuthContext = createContext<AuthContextProps>({
     });
   },
   signOut: () => {},
-//   sendVerificationEmail: (): Promise<GenericResponse> => {
-//     return Promise.resolve({
-//       success: false,
-//       message: "",
-//     });
-//   },
+  //   sendVerificationEmail: (): Promise<GenericResponse> => {
+  //     return Promise.resolve({
+  //       success: false,
+  //       message: "",
+  //     });
+  //   },
   isSigningIn: false,
   isSigningOut: false,
 });
@@ -97,6 +107,37 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [session, setSession] = useState<DatabaseSession | null>(null);
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const updateUser = async (
+    updatedUser: UpdateUser,
+  ): Promise<UpdateUserResponse> => {
+    setUser((prevUser) => {
+      if (prevUser === null) return null;
+      return {
+        ...prevUser,
+      };
+    });
+    try {
+      const res = await updateUsers(updatedUser);
+      if (res.success) {
+        return {
+          success: true,
+          message: "User updated successfully",
+        };
+      } else {
+        return {
+          success: false,
+          message: "",
+        };
+      }
+    } catch (error) {
+      console.error("Error updating user:", error);
+      return {
+        success: false,
+        message: "",
+      };
+    }
+  };
 
   const signIn = async (
     email: string,
@@ -217,7 +258,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setIsAuthenticated(true);
         let loggeduser = user;
         if (!user.image) {
-            loggeduser["image"] = "No Image";
+          loggeduser["image"] = "No Image";
         }
         setUser(user);
         setSession(session);
@@ -286,6 +327,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
         isAuthenticated,
         checkAuthentication,
         user,
+        updateUser,
         session,
         initAuth,
         signIn,
@@ -299,7 +341,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
       {!initAuth ? (
         <>
           <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center gap-1 text-center">
-            Loading... 
+            Loading...
           </div>
         </>
       ) : (

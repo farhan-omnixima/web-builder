@@ -7,7 +7,7 @@ import { useParams, useRouter } from "next/navigation";
 import LoadingDots from "@/components/icons/loading-dots";
 import va from "@vercel/analytics";
 
-export default function CreatePostButton() {
+export default function CreatePageButton() {
   const router = useRouter();
   const { id } = useParams() as { id: string };
   const [isPending, startTransition] = useTransition();
@@ -30,7 +30,7 @@ export default function CreatePostButton() {
       )}
       disabled={isPending}
     >
-      {isPending ? <LoadingDots color="#808080" /> : <p>Create New Post</p>}
+      {isPending ? <LoadingDots color="#808080" /> : <p>Create New Page</p>}
     </button>
   );
 }

@@ -4,7 +4,7 @@ import { placeholderBlurhash, random } from "@/lib/utils";
 import { BarChart, ExternalLink } from "lucide-react";
 import Link from "next/link";
 
-export default function PostCard({
+export default function PageCard({
   data,
 }: {
   data: SelectPost & { site: SelectSite | null };

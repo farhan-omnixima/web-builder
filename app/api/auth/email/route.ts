@@ -9,7 +9,6 @@ import { User } from "lucia";
 
 export async function POST(request: Request): Promise<Response> {
   const formData = await request.formData();
-  console.log(formData);
   const action = formData.get("action");
   if (!action || typeof action !== "string") {
     return new Response("Invalid action", {
@@ -58,7 +57,6 @@ export async function POST(request: Request): Promise<Response> {
       user = insertUser[0];
     } else {
       user = await db.select().from(users).where(eq(users.email, email)).get();
-      //console.log(user);
       if (!user) {
         throw Error("Invalid email or password.");
       }

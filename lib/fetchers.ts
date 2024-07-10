@@ -29,7 +29,7 @@ export async function getSiteData(domain: string) {
   )();
 }
 
-export async function getPostsForSite(domain: string) {
+export async function getPagesForSite(domain: string) {
   const subdomain = domain.endsWith(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`)
     ? domain.replace(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`, "")
     : null;
@@ -65,7 +65,7 @@ export async function getPostsForSite(domain: string) {
   )();
 }
 
-export async function getPostData(domain: string, slug: string) {
+export async function getPageData(domain: string, slug: string) {
   const subdomain = domain.endsWith(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`)
     ? domain.replace(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`, "")
     : null;

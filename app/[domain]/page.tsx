@@ -3,9 +3,10 @@ import { notFound } from "next/navigation";
 import BlurImage from "@/components/blur-image";
 import { placeholderBlurhash, toDateString } from "@/lib/utils";
 import BlogCard from "@/components/blog-card";
-import { getPostsForSite, getSiteData } from "@/lib/fetchers";
+import { getPagesForSite, getSiteData } from "@/lib/fetchers";
 import Image from "next/image";
 import db from "@/lib/db";
+import RenderPage from "@/components/render-page";
 
 export async function generateStaticParams() {
   const allSites = await db.query.sites.findMany({
@@ -37,9 +38,24 @@ export default async function SiteHomePage({
   params: { domain: string };
 }) {
   const domain = decodeURIComponent(params.domain);
-  const [data, posts] = await Promise.all([
+  const pageData = {
+    root: {
+      props: {},
+    },
+    content: [
+      {
+        type: "HeadingBlock",
+        props: {
+          id: "HeadingBlock-896b7c5c-20d3-41b4-91a4-3af05fddf52e",
+          children: "Heading Block",
+        },
+      },
+    ],
+    zones: {},
+  };
+  const [data, pages] = await Promise.all([
     getSiteData(domain),
-    getPostsForSite(domain),
+    getPagesForSite(domain),
   ]);
 
   if (!data) {
@@ -49,26 +65,27 @@ export default async function SiteHomePage({
   return (
     <>
       <div className="mb-20 w-full">
-        {posts.length > 0 ? (
+        <RenderPage data={pageData} />
+        {pages.length > 0 ? (
           <div className="mx-auto w-full max-w-screen-xl md:mb-28 lg:w-5/6">
-            <Link href={`/${posts[0].slug}`}>
+            <Link href={`/${pages[0].slug}`}>
               <div className="group relative mx-auto h-80 w-full overflow-hidden sm:h-150 lg:rounded-xl">
                 <BlurImage
-                  alt={posts[0].title ?? ""}
-                  blurDataURL={posts[0].imageBlurhash ?? placeholderBlurhash}
+                  alt={pages[0].title ?? ""}
+                  blurDataURL={pages[0].imageBlurhash ?? placeholderBlurhash}
                   className="h-full w-full object-cover group-hover:scale-105 group-hover:duration-300"
                   width={1300}
                   height={630}
                   placeholder="blur"
-                  src={posts[0].image ?? "/placeholder.png"}
+                  src={pages[0].image ?? "/placeholder.png"}
                 />
               </div>
               <div className="mx-auto mt-10 w-5/6 lg:w-full">
                 <h2 className="my-10 font-title text-4xl md:text-6xl dark:text-white">
-                  {posts[0].title}
+                  {pages[0].title}
                 </h2>
                 <p className="w-full text-base md:text-lg lg:w-2/3 dark:text-white">
-                  {posts[0].description}
+                  {pages[0].description}
                 </p>
                 <div className="flex w-full items-center justify-start space-x-4">
                   <div className="relative h-8 w-8 flex-none overflow-hidden rounded-full">
@@ -91,7 +108,7 @@ export default async function SiteHomePage({
                   </p>
                   <div className="h-6 border-l border-stone-600 dark:border-stone-400" />
                   <p className="m-auto my-5 w-10/12 text-sm font-light text-stone-500 md:text-base dark:text-stone-400">
-                    {toDateString(posts[0].createdAt)}
+                    {toDateString(pages[0].createdAt)}
                   </p>
                 </div>
               </div>
@@ -114,19 +131,19 @@ export default async function SiteHomePage({
               className="hidden dark:block"
             />
             <p className="font-title text-2xl text-stone-600 dark:text-stone-400">
-              No posts yet.
+              No pages yet.
             </p>
           </div>
         )}
       </div>
 
-      {posts.length > 1 && (
+      {pages.length > 1 && (
         <div className="mx-5 mb-20 max-w-screen-xl lg:mx-24 2xl:mx-auto">
           <h2 className="mb-10 font-title text-4xl md:text-5xl dark:text-white">
             More stories
           </h2>
           <div className="grid w-full grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 xl:grid-cols-3">
-            {posts.slice(1).map((metadata: any, index: number) => (
+            {pages.slice(1).map((metadata: any, index: number) => (
               <BlogCard key={index} data={metadata} />
             ))}
           </div>

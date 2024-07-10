@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getPostData, getSiteData } from "@/lib/fetchers";
+import { getPageData, getSiteData } from "@/lib/fetchers";
 import BlogCard from "@/components/blog-card";
 import BlurImage from "@/components/blur-image";
 import MDX from "@/components/mdx";
@@ -17,7 +17,7 @@ export async function generateMetadata({
   const slug = decodeURIComponent(params.slug);
 
   const [data, siteData] = await Promise.all([
-    getPostData(domain, slug),
+    getPageData(domain, slug),
     getSiteData(domain),
   ]);
   if (!data || !siteData) {
@@ -77,14 +77,14 @@ export async function generateStaticParams() {
   return allPaths;
 }
 
-export default async function SitePostPage({
+export default async function SitePagesPage({
   params,
 }: {
   params: { domain: string; slug: string };
 }) {
   const domain = decodeURIComponent(params.domain);
   const slug = decodeURIComponent(params.slug);
-  const data = await getPostData(domain, slug);
+  const data = await getPageData(domain, slug);
 
   if (!data) {
     notFound();
