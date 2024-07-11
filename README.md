@@ -1,41 +1,32 @@
-<a href="https://app.vercel.pub">
-  <img alt="Platforms Starter Kit" src="/public/thumbnail.png">
-  <h1 align="center">Platforms Starter Kit</h1>
-</a>
-
-<p align="center">
-  The <em>all-in-one</em> starter kit <br/>
-  for building multi-tenant applications.
-</p>
-
-<p align="center">
-  <a href="#introduction"><strong>Introduction</strong></a> ·
-  <a href="https://app.vercel.pub/"><strong>Demo</strong></a> ·
-  <a href="#deploy-your-own"><strong>Deploy Your Own</strong></a> ·
-  <a href="https://vercel.com/guides/nextjs-multi-tenant-application"><strong>Guide</strong></a> ·
-  <a href="https://steven.vercel.pub/kitchen-sink"><strong>Kitchen Sink</strong></a> ·
-  <a href="#contributing"><strong>Contributing</strong></a>
-</p>
-<br/>
+# Web Builder - Wolfdevs
 
 ## Introduction
+This is a Web Builder and Content Management (WBCM) platform that allows users to create their own single page websites for any kind of product promotion or e-commerce platform. It is built on top of the [Platforms Starter Kit](https://app.vercel.pub/) by Vercel. 
 
-The [Platforms Starter Kit](https://app.vercel.pub/) is a full-stack Next.js app with multi-tenancy and custom domain support. Built with [Next.js App Router](https://nextjs.org/docs/app), [Vercel Postgres](https://vercel.com/storage/postgres) and the [Vercel Domains API](https://vercel.com/docs/rest-api/endpoints#domains).
+Also It is used the [Puck Editor](https://puckeditor.com/) for the Web Builder Editor.
 
-Here's a quick 30-second demo:
-
-https://github.com/vercel/platforms/assets/28986134/bd370257-0c27-4cf5-8a56-28589f36f0ef
 
 ## Features
+- **Web Builder**: Users can create their own single page websites using the drag and drop editor.
+- **Content Management**: Users can manage their website content using the Content Management System.
+- **Authentication**: Users can sign up and login to the platform.
+- **Custom Domains**: Users can map their own custom domains to their websites.
+- **Billing**: Users can subscribe to a plan and pay for it using Stripe.
+- **SEO**: Users can set SEO meta tags for their websites.
+- **Analytics**: Users can view analytics for their websites.
+- **Support**: Users can contact support for any issues.
 
-1. **Multi-tenancy:** Programmatically assign unlimited custom domains, subdomains, and SSL certificates to your users using the [Vercel Domains API](https://vercel.com/docs/rest-api/endpoints#domains)
-2. **Performance**: Fast & beautiful blog posts cached via [Vercel's Edge Network](https://vercel.com/docs/concepts/edge-network/overview), with the ability to invalidate the cache on-demand (when users make changes) using [Incremental Static Regeneration](https://vercel.com/docs/concepts/next.js/incremental-static-regeneration) + Next.js' `revalidateTag` API
-3. **AI Editor**: AI-powered Markdown editor for a Notion-style writing experience powered by [Novel](https://novel.sh/)
-4. **Image Uploads**: Drag & drop / copy & paste image uploads, backed by [Vercel Blob](https://vercel.com/storage/blob)
-5. **Custom styles**: Custom fonts, 404 pages, favicons, sitemaps for each site via the [Next.js file-based Metadata API](https://nextjs.org/docs/app/api-reference/file-conventions/metadata)
-6. **Dynamic OG Cards**: Each blog post comes with a dynamic OG image powered by [@vercel/og](https://vercel.com/docs/concepts/functions/edge-functions/og-image-generation)
-7. **Dark Mode**: For a better user experience at night
-8. **Multi-tenant Preview URLs**: Preview changes to your client sites using [Vercel Preview URLs](https://vercel.com/docs/deployments/generated-urls). [Learn more](https://vercel.com/guides/nextjs-multi-tenant-application#3.-multi-tenant-preview-urls).
+## Tech Stack
+- **Frontend**: Next.js, Tailwind CSS, Puck Editor
+- **Backend**: Next.js API Routes, Drizzle ORM, Drizzle Kit 
+- **Database**:  Turso Sqlite DB (libsql)
+- **Storage**: Vercel Blob Storage
+- **Authentication**: Lucia Auth
+- **Billing**: Stripe
+- **Analytics**: Tremor
+- **Deployment**: Cloudfare
+
+
 
 <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://images.ctfassets.net/e5382hct74si/k7XpXIE0rDsHCAYvkKhff/ff44c07588068d8fefa334cd6a318c8a/CleanShot_2023-07-05_at_08.39.02.png">
@@ -73,69 +64,106 @@ Users can also map custom domains to their `.hashnode.dev` subdomain:
 
 With the Platforms Starter Kit, you can offer unlimited custom domains at no extra cost to your customers as a premium feature, without having to worry about custom nameservers or configuring SSL certificates.
 
-## Examples of platforms
+## Use Cases
 
-Vercel customers like [Hashnode](https://vercel.com/customers/hashnode), [Super](https://super.so), and [Cal.com](https://cal.com) are building scalable platforms on top of Vercel and Next.js. There are multiple types of platforms you can build with this starter kit:
+- Content creation platforms
+  * [Hashnode](https://hashnode.com)
+  * [Mintlify](https://mintlify.com/)
+  * [Read.cv](https://read.cv/)
 
-### 1. Content creation platforms
+- Website & e-commerce store builders
+- B2B2C platforms
 
-These are content-heavy platforms (blogs) with simple, standardized page layouts and route structure.
+## Author & Developer
 
-> “With Vercel, we spend less time managing our infrastructure and more time delivering value to our users.” — Sandeep Panda, Co-founder, Hashnode
-
-1. [Hashnode](https://hashnode.com)
-2. [Mintlify](https://mintlify.com/)
-3. [Read.cv](https://read.cv/)
-
-### 2. Website & e-commerce store builders
-
-No-code site builders with customizable pages.
-
-By using Next.js and Vercel, [Super](https://super.so/) has fast, globally distributed websites with a no-code editor (Notion). Their customers get all the benefits of Next.js (like [Image Optimization](https://nextjs.org/docs/basic-features/image-optimization)) without touching any code.
-
-1. [Super.so](https://super.so)
-2. [Typedream](https://typedream.com)
-3. [Makeswift](https://www.makeswift.com/)
-
-### 3. B2B2C platforms
-
-Multi-tenant authentication, login, and access controls.
-
-With Vercel and Next.js, platforms like [Instatus](https://instatus.com) are able to create status pages that are _10x faster_ than competitors.
-
-1. [Instatus](https://instatus.com/)
-2. [Cal.com](https://cal.com/)
-3. [Dub](https://dub.co/)
-
-## Built on open source
-
-This working demo site was built using the Platforms Starter Kit and:
-
-- [Next.js](https://nextjs.org/) as the React framework
-- [Tailwind](https://tailwindcss.com/) for CSS styling
-- [Drizzle](https://orm.drizzle.team/) as the ORM for database access
-- [Novel](https://novel.sh/) for the WYSIWYG editor
-- [Vercel Postgres](https://vercel.com/storage/postgres) for the database
-- [Vercel Blob](https://vercel.com/storage/blob) for image uploads
-- [NextAuth.js](https://next-auth.js.org/) for authentication
-- [Tremor](https://tremor.so/) for charts
-- [Vercel](http://vercel.com/) for deployment
-
-## Contributing
-
-- [Start a discussion](https://github.com/vercel/platforms/discussions) with a question, piece of feedback, or idea you want to share with the team.
-- [Open an issue](https://github.com/vercel/platforms/issues) if you believe you've encountered a bug with the starter kit.
-
-## Author
-
-- Steven Tey ([@steventey](https://twitter.com/steventey))
+- Md. Farhan Masud Shohag (Next.js Developer, Omnixima) [Github](https://github.com/fms-byte)
 
 ## License
 
-The MIT License.
+The MIT License. See [LICENSE]() for more information.
+"Button Group": {
+      fields: {
+        children: {
+          type: "text",
+          label: "Button Text",
+        },
+        backgroundColor: {
+          type: "text",
+          label: "Background Color (#hex)",
+        },
+        size: {
+          type: "select",
+          label: "Size",
+          options: [
+            { value: "px-2 py-1", label: "Small" },
+            { value: "px-4 py-2", label: "Medium" },
+            { value: "px-6 py-3", label: "Large" },
+            { value: "px-8 py-4", label: "Extra Large" },
+            { value: "px-10 py-5", label: "2x Large" },
+            { value: "px-12 py-6", label: "3x Large" },
+          ],
+        },
+        textColor: {
+          type: "text",
+          label: "Text Color (#hex)",
+        },
+        borderRadius: {
+          type: "select",
+          label: "Border Radius",
+          options: [
+            { value: "rounded-none", label: "None" },
+            { value: "rounded-sm", label: "Small" },
+            { value: "rounded-md", label: "Medium" },
+            { value: "rounded-lg", label: "Large" },
+            { value: "rounded-full", label: "Full" },
+          ],
+        },
+        alignment: {
+          type: "radio",
+          label: "Alignment",
+          options: [
+            { value: "left", label: "Left" },
+            { value: "center", label: "Center" },
+            { value: "right", label: "Right" },
+          ],
+        },
+      },
+      defaultProps: {
+        children: "Button",
+        backgroundColor: "#000000",
+        size: "px-4 py-2",
+        textColor: "#ffffff",
+        borderRadius: "rounded-md",
+        alignment: "left",
+      },
+      render: ({
+        children,
+        backgroundColor,
+        size,
+        textColor,
+        borderRadius,
+        alignment,
+      }: {
+        children: string;
+        backgroundColor: string;
+        size: string;
+        textColor: string;
+        borderRadius: string;
+        alignment: string;
+      }) => {
+        const buttonStyle = {
+          backgroundColor: backgroundColor,
+          color: textColor,
+        };
+        const containerClassName = `flex ${alignment === "center" ? "justify-center" : alignment === "right" ? "justify-end" : "justify-start"}`;
+        const buttonClassName = `${size} ${borderRadius}`;
 
----
-
-<a aria-label="Vercel logo" href="https://vercel.com">
-  <img src="https://badgen.net/badge/icon/Made%20by%20Vercel?icon=zeit&label&color=black&labelColor=black">
-</a>
+        return (
+          <div className={containerClassName}>
+            <button className={buttonClassName} style={buttonStyle}>
+              {children}
+            </button>
+          </div>
+        );
+      },
+    },

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function HomePage() {
+  const APP_URL = process.env.NEXTAUTH_URL;
   return (
     <div className="flex h-screen flex-col items-center justify-center space-y-10 bg-black">
       <Image
@@ -18,7 +19,7 @@ export default function HomePage() {
       </p>
       
       <Link
-        href="/login"
+        href={`${APP_URL}/login`}
         className="bg-white text-black px-4 py-2 rounded-lg"
       >
         Get Started
