@@ -31,7 +31,7 @@ export const config: Config = {
       fields: {
         children: {
           type: "text",
-          label: "Text",
+          label: "Heading",
         },
         size: {
           type: "select",
@@ -492,27 +492,6 @@ export const config: Config = {
             <img src={image} alt={title} className="h-32 w-32 rounded-full" />
             <h2 className="text-2xl font-semibold">{title}</h2>
             <p>{description}</p>
-          </div>
-        );
-      },
-    },
-    Logos: {
-      fields: {
-        logos: {
-          type: "array",
-          arrayFields: {
-            image: {
-              type: "text",
-            },
-          },
-        },
-      },
-      render: ({ logos }: { logos: { image: string }[] }) => {
-        return (
-          <div className="flex gap-4">
-            {logos.map(({ image }, idx) => (
-              <img key={idx} src={image} alt={`Logo ${idx + 1}`} />
-            ))}
           </div>
         );
       },
