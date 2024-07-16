@@ -2,7 +2,6 @@
 import { Config, DropZone } from "@measured/puck";
 import { Key } from "react";
 
-
 export const config: Config = {
   categories: {
     layout: {
@@ -34,30 +33,41 @@ export const config: Config = {
           label: "Heading",
         },
         size: {
+          type: "number",
+          label: "Font Size (px)",
+          min: 1,
+        },
+        weight: {
           type: "select",
-          label: "Size",
+          label: "Font Weight",
           options: [
-            { value: "text-lg", label: "XS" },
-            { value: "text-xl", label: "S" },
-            { value: "text-2xl", label: "M" },
-            { value: "text-3xl", label: "L" },
-            { value: "text-4xl", label: "XL" },
-            { value: "text-5xl", label: "XXL" },
-            { value: "text-6xl", label: "XXXL" },
-            { value: "text-7xl", label: "XXXXL" },
+            { value: "thin", label: "Thin" },
+            { value: "light", label: "Light" },
+            { value: "normal", label: "Normal" },
+            { value: "semibold", label: "Semibold" },
+            { value: "bold", label: "Bold" },
+            { value: "black", label: "Black" },
           ],
         },
         tag: {
           type: "select",
           label: "HTML Tag",
           options: [
-            { value: "h1", label: "h1" },
-            { value: "h2", label: "h2" },
-            { value: "h3", label: "h3" },
-            { value: "h4", label: "h4" },
-            { value: "h5", label: "h5" },
-            { value: "h6", label: "h6" },
+            { value: "h1", label: "H1" },
+            { value: "h2", label: "H2" },
+            { value: "h3", label: "H3" },
+            { value: "h4", label: "H4" },
+            { value: "h5", label: "H5" },
+            { value: "h6", label: "H6" },
           ],
+        },
+        backgroundColor: {
+          type: "text",
+          label: "Background Color (#hex)",
+        },
+        textColor: {
+          type: "text",
+          label: "Text Color (#hex)",
         },
         align: {
           type: "radio",
@@ -69,39 +79,111 @@ export const config: Config = {
           ],
         },
         padding: {
-          type: "select",
+          type: "object",
           label: "Padding",
-          options: [
-            { value: "p-0", label: "None" },
-            { value: "p-2", label: "Small" },
-            { value: "p-4", label: "Medium" },
-            { value: "p-6", label: "Large" },
-          ],
+          objectFields: {
+            left: {
+              type: "number",
+              label: "Left (px)",
+              min: 0,
+            },
+            right: {
+              type: "number",
+              label: "Right (px)",
+              min: 0,
+            },
+            top: {
+              type: "number",
+              label: "Top (px)",
+              min: 0,
+            },
+            bottom: {
+              type: "number",
+              label: "Bottom (px)",
+              min: 0,
+            },
+          },
         },
         margin: {
-          type: "select",
-          label: "Margin",
-          options: [
-            { value: "m-0", label: "None" },
-            { value: "m-2", label: "Small" },
-            { value: "m-4", label: "Medium" },
-            { value: "m-6", label: "Large" },
-          ],
+          type: "object",
+          label: "Margin (px)",
+          objectFields: {
+            left: {
+              type: "number",
+              label: "Left (px)",
+              min: 0,
+            },
+            right: {
+              type: "number",
+              label: "Right (px)",
+              min: 0,
+            },
+            top: {
+              type: "number",
+              label: "Top (px)",
+              min: 0,
+            },
+            bottom: {
+              type: "number",
+              label: "Bottom (px)",
+              min: 0,
+            },
+          },
         },
       },
       defaultProps: {
         children: "Heading",
-        size: "text-3xl",
+        size: 36,
+        weight: "semibold",
         tag: "h1",
+        backgroundColor: "#FFFFFF",
+        textColor: "#000000",
         align: "text-left",
-        padding: "p-0",
-        margin: "m-0",
+        padding: {
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0,
+        },
+        margin: {
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0,
+        },
       },
-      render: ({ children, size, tag, align, padding, margin }) => {
+      render: ({
+        children,
+        size,
+        weight,
+        tag,
+        backgroundColor,
+        textColor,
+        align,
+        padding,
+        margin,
+      }) => {
         const Tag = tag as keyof JSX.IntrinsicElements;
-        const className = `${size} ${align} ${padding} ${margin} font-semibold`;
+        const style = {
+          paddingTop: `${padding.top}px`,
+          paddingRight: `${padding.right}px`,
+          paddingBottom: `${padding.bottom}px`,
+          paddingLeft: `${padding.left}px`,
+          marginTop: `${margin.top}px`,
+          marginRight: `${margin.right}px`,
+          marginBottom: `${margin.bottom}px`,
+          marginLeft: `${margin.left}px`,
+          backgroundColor: backgroundColor,
+          color: textColor,
+          fontSize: `${size}px`,
+        };
+        const className = `${align} ${weight}`;
 
-        return <Tag className={className}>{children}</Tag>;
+        return (
+          <Tag className={className} style={style}>
+            {children}
+          </Tag>
+        );
       },
     },
     Text: {
@@ -111,22 +193,25 @@ export const config: Config = {
           label: "Text",
         },
         size: {
+          type: "number",
+          label: "Font Size (px)",
+          min: 1,
+        },
+        weight: {
           type: "select",
-          label: "Size",
+          label: "Font Weight",
           options: [
-            { value: "text-xs", label: "XS" },
-            { value: "text-sm", label: "S" },
-            { value: "text-base", label: "M" },
-            { value: "text-lg", label: "L" },
-            { value: "text-xl", label: "XL" },
-            { value: "text-2xl", label: "XXL" },
-            { value: "text-3xl", label: "XXXL" },
-            { value: "text-4xl", label: "XXXXL" },
+            { value: "thin", label: "Thin" },
+            { value: "light", label: "Light" },
+            { value: "normal", label: "Normal" },
+            { value: "semibold", label: "Semibold" },
+            { value: "bold", label: "Bold" },
+            { value: "black", label: "Black" },
           ],
         },
-        color: {
+        textColor: {
           type: "text",
-          label: "Color (#hex)",
+          label: "Text Color (#hex)",
         },
         align: {
           type: "radio",
@@ -138,51 +223,99 @@ export const config: Config = {
           ],
         },
         padding: {
-          type: "select",
+          type: "object",
           label: "Padding",
-          options: [
-            { value: "p-0", label: "None" },
-            { value: "p-2", label: "Small" },
-            { value: "p-4", label: "Medium" },
-            { value: "p-6", label: "Large" },
-          ],
+          objectFields: {
+            left: {
+              type: "number",
+              label: "Left (px)",
+              min: 0,
+            },
+            right: {
+              type: "number",
+              label: "Right (px)",
+              min: 0,
+            },
+            top: {
+              type: "number",
+              label: "Top (px)",
+              min: 0,
+            },
+            bottom: {
+              type: "number",
+              label: "Bottom (px)",
+              min: 0,
+            },
+          },
         },
         margin: {
-          type: "select",
-          label: "Margin",
-          options: [
-            { value: "m-0", label: "None" },
-            { value: "m-2", label: "Small" },
-            { value: "m-4", label: "Medium" },
-            { value: "m-6", label: "Large" },
-          ],
+          type: "object",
+          label: "Margin (px)",
+          objectFields: {
+            left: {
+              type: "number",
+              label: "Left (px)",
+              min: 0,
+            },
+            right: {
+              type: "number",
+              label: "Right (px)",
+              min: 0,
+            },
+            top: {
+              type: "number",
+              label: "Top (px)",
+              min: 0,
+            },
+            bottom: {
+              type: "number",
+              label: "Bottom (px)",
+              min: 0,
+            },
+          },
         },
       },
       defaultProps: {
         children: "Text",
-        color: "#000000",
-        size: "text-base",
+        size: 16,
+        weight: "normal",
+        textColor: "#000000",
         align: "text-left",
-        padding: "p-0",
-        margin: "m-0",
+        padding: {
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0,
+        },
+        margin: {
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0,
+        },
       },
       render: ({
         children,
         size,
+        weight,
+        textColor,
         align,
         padding,
         margin,
-        color,
-      }: {
-        children: string;
-        size: string;
-        align: string;
-        padding: string;
-        margin: string;
-        color: string;
       }) => {
-        const style = { color: color };
-        const className = `${size} ${align} ${padding} ${margin}`;
+        const style = {
+          paddingTop: `${padding.top}px`,
+          paddingRight: `${padding.right}px`,
+          paddingBottom: `${padding.bottom}px`,
+          paddingLeft: `${padding.left}px`,
+          marginTop: `${margin.top}px`,
+          marginRight: `${margin.right}px`,
+          marginBottom: `${margin.bottom}px`,
+          marginLeft: `${margin.left}px`,
+          color: textColor,
+          fontSize: `${size}px`,
+        };
+        const className = `${align} ${weight}`;
 
         return (
           <p className={className} style={style}>
@@ -245,10 +378,7 @@ export const config: Config = {
                       : ""
                   }`}
                 >
-                  <DropZone
-                    zone={`column-${idx}`}
-                    disallow={["Hero", "Logos", "Stats"]}
-                  />
+                  <DropZone zone={`column-${idx}`} />
                 </div>
               ),
             )}
@@ -256,61 +386,7 @@ export const config: Config = {
         );
       },
     },
-    Flex: {
-      fields: {
-        gap: {
-          type: "select",
-          label: "Gap",
-          options: [
-            { value: "2", label: "Small" },
-            { value: "4", label: "Medium" },
-            { value: "6", label: "Large" },
-            { value: "8", label: "Extra Large" },
-          ],
-        },
-        minWidth: {
-          type: "number",
-          label: "Minimum Width (px)",
-          min: 0,
-        },
-        zones: {
-          type: "array",
-          label: "Flex Box",
-          getItemSummary: (_, id) => `Flexbox ${id! + 1}`,
-          arrayFields: {
-            name: {
-              type: "text",
-              label: "Flexbox Name",
-            },
-          },
-        },
-      },
-      defaultProps: {
-        gap: "4",
-        minWidth: 356,
-        zones: [{ name: "left" }, { name: "right" }],
-      },
-      render: ({ gap, minWidth, zones }) => {
-        return (
-          <div className={`flex flex-wrap gap-${gap} w-full`}>
-            {zones.map(
-              (zone: { name: string }, index: Key | null | undefined) => (
-                <div
-                  key={index}
-                  style={{
-                    minWidth: `${minWidth}px`,
-                    flexGrow: 1,
-                    flexBasis: `${minWidth}px`,
-                  }}
-                >
-                  <DropZone zone={zone.name || `flexbox-${index}`} />
-                </div>
-              ),
-            )}
-          </div>
-        );
-      },
-    },
+
     "Vertical Space": {
       fields: {
         size: {
@@ -459,40 +535,295 @@ export const config: Config = {
       }) => {
         return (
           <div className="flex flex-col items-center justify-center rounded bg-white p-4 shadow">
-            <div className="rounded-full bg-gray-200 p-2" dangerouslySetInnerHTML={{ __html: icon }}></div>
-            <h2 className="p-2 text-2xl font-semibold">{title}</h2>
+            <div
+              className="rounded-full bg-gray-200 p-2"
+              dangerouslySetInnerHTML={{ __html: icon }}
+            ></div>
+            <h2 className="semibold p-2 text-2xl">{title}</h2>
             <p className="p-2">{description}</p>
           </div>
         );
       },
-    },    
+    },
     Section: {
       fields: {
-        title: {
-          type: "text",
+        display: {
+          type: "select",
+          label: "Display",
+          options: [
+            { value: "block", label: "Block" },
+            { value: "flex", label: "Flex" },
+            { value: "grid", label: "Grid" },
+            { value: "inline", label: "Inline" },
+            { value: "inline-block", label: "Inline Block" },
+          ],
         },
-        description: {
-          type: "text",
+        margin: {
+          type: "object",
+          label: "Margin (px)",
+          objectFields: {
+            top: { type: "number", label: "Top" },
+            right: { type: "number", label: "Right" },
+            bottom: { type: "number", label: "Bottom" },
+            left: { type: "number", label: "Left" },
+          },
         },
-        image: {
+        padding: {
+          type: "object",
+          label: "Padding (px)",
+          objectFields: {
+            top: { type: "number", label: "Top" },
+            right: { type: "number", label: "Right" },
+            bottom: { type: "number", label: "Bottom" },
+            left: { type: "number", label: "Left" },
+          },
+        },
+        width: {
           type: "text",
+          label: "Width",
+        },
+        height: {
+          type: "text",
+          label: "Height",
+        },
+        overflow: {
+          type: "select",
+          label: "Overflow",
+          options: [
+            { value: "visible", label: "Visible" },
+            { value: "hidden", label: "Hidden" },
+            { value: "scroll", label: "Scroll" },
+            { value: "auto", label: "Auto" },
+          ],
+        },
+        backgroundColor: {
+          type: "text",
+          label: "Background Color (#hex)",
+        },
+        backgroundImage: {
+          type: "text",
+          label: "Background Image URL",
+        },
+        borderRadius: {
+          type: "number",
+          label: "Border Radius (px)",
+        },
+        boxShadow: {
+          type: "text",
+          label: "Box Shadow",
+        },
+        position: {
+          type: "select",
+          label: "Position",
+          options: [
+            { value: "static", label: "Static" },
+            { value: "relative", label: "Relative" },
+            { value: "absolute", label: "Absolute" },
+            { value: "fixed", label: "Fixed" },
+            { value: "sticky", label: "Sticky" },
+          ],
+        },
+        zIndex: {
+          type: "number",
+          label: "Z-Index",
+        },
+        divider: {
+          type: "object",
+          label: "Divider",
+          objectFields: {
+            show: {
+              type: "radio",
+              label: "Show Divider",
+              options: [
+                { value: true, label: "Yes" },
+                { value: false, label: "No" },
+              ],
+            },
+            color: { type: "text", label: "Divider Color (#hex)" },
+            thickness: { type: "number", label: "Divider Thickness (px)" },
+          },
+        },
+      },
+      resolveFields: async (data, { fields }) => {
+        if (data.props.display === "flex") {
+          return {
+            flex: {
+              type: "object",
+              label: "Flex",
+              objectFields: {
+                flexWrap: {
+                  type: "radio",
+                  label: "Flex Wrap",
+                  options: [
+                    { value: "flex-nowrap", label: "No Wrap" },
+                    { value: "flex-wrap", label: "Wrap" },
+                    { value: "flex-wrap-reverse", label: "Wrap Reverse" },
+                  ],
+                },
+                direction: {
+                  type: "radio",
+                  label: "Direction",
+                  options: [
+                    { value: "flex-row", label: "Row" },
+                    { value: "flex-row-reverse", label: "Row Reverse" },
+                    { value: "flex-column", label: "Column" },
+                    { value: "flex-column-reverse", label: "Column Reverse" },
+                  ],
+                },
+                alignItems: {
+                  type: "select",
+                  label: "Align Items",
+                  options: [
+                    { value: "flex-start", label: "Start" },
+                    { value: "flex-end", label: "End" },
+                    { value: "center", label: "Center" },
+                    { value: "baseline", label: "Baseline" },
+                    { value: "stretch", label: "Stretch" },
+                  ],
+                },
+                justifyItems: {
+                  type: "select",
+                  label: "Justify Items",
+                  options: [
+                    { value: "flex-start", label: "Start" },
+                    { value: "flex-end", label: "End" },
+                    { value: "center", label: "Center" },
+                    { value: "space-between", label: "Space Between" },
+                    { value: "space-around", label: "Space Around" },
+                    { value: "space-evenly", label: "Space Evenly" },
+                  ],
+                },
+                flexGrow: {
+                  type: "number",
+                  label: "Grow",
+                  min: 0,
+                },
+                flexShrink: {
+                  type: "number",
+                  label: "Shrink",
+                  min: 0,
+                },
+                columnGap: {
+                  type: "number",
+                  label: "Column Gap",
+                  min: 0,
+                },
+                rowGap: {
+                  type: "number",
+                  label: "Row Gap",
+                  min: 0,
+                },
+              },
+            },
+            ...fields,
+          };
+        } else if (data.props.display === "grid") {
+          return {
+            grid: {
+              type: "object",
+              label: "Grid",
+              objectFields: {
+                templateColumns: {
+                  type: "text",
+                  label: "Template Columns",
+                },
+                templateRows: {
+                  type: "text",
+                  label: "Template Rows",
+                },
+                gap: {
+                  type: "number",
+                  label: "Gap",
+                  min: 0,
+                },
+              },
+            },
+            ...fields,
+          };
+        }
+        return fields;
+      },
+      defaultProps: {
+        display: "block",
+        margin: { top: 0, right: 0, bottom: 0, left: 0 },
+        padding: { top: 0, right: 0, bottom: 0, left: 0 },
+        width: "100%",
+        height: "100%",
+        overflow: "visible",
+        backgroundColor: "#AF0000",
+        backgroundImage: "",
+        borderRadius: 0,
+        boxShadow: "5px",
+        position: "static",
+        zIndex: 0,
+        divider: {
+          show: false,
+          color: "#000000",
+          thickness: 1,
         },
       },
       render: ({
         title,
-        description,
-        image,
-      }: {
-        title: string;
-        description: string;
-        image: string;
+        children,
+        display,
+        margin,
+        padding,
+        width,
+        height,
+        overflow,
+        backgroundColor,
+        backgroundImage,
+        borderRadius,
+        boxShadow,
+        position,
+        zIndex,
+        divider,
+        flex,
+        grid,
       }) => {
+        const style = {
+          display,
+          width: `calc(${width} - ${margin.left + margin.right}px)`,
+          maxWidth: "100%",
+          marginTop: `${margin.top}px`,
+          marginRight: `${margin.right}px`,
+          marginBottom: `${margin.bottom}px`,
+          marginLeft: `${margin.left}px`,
+          paddingTop: `${padding.top}px`,
+          paddingRight: `${padding.right}px`,
+          paddingBottom: `${padding.bottom}px`,
+          paddingLeft: `${padding.left}px`,
+          height,
+          overflow,
+          backgroundColor,
+          backgroundImage: backgroundImage ? `url(${backgroundImage})` : "none",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          borderRadius: `${borderRadius}px`,
+          boxShadow,
+          position,
+          zIndex,
+        };
+
+        let flexStyle = "";
+        let gridStyle = "";
+        if (display === "flex" && flex) {
+          flexStyle = `flex ${flex.flexWrap} ${flex.direction} ${flex.alignItems} ${flex.justifyItems} ${flex.flexGrow} ${flex.flexShrink} ${flex.columnGap} ${flex.rowGap}`;
+        } else if (display === "grid" && grid) {
+          gridStyle = `grid ${grid.templateColumns} ${grid.templateRows} ${grid.gap}`;
+        }
+
+        const dividerStyle = divider.show
+          ? { borderBottom: `${divider.thickness}px solid ${divider.color}` }
+          : {};
+
         return (
-          <div className="flex flex-col items-center justify-center bg-gray-200 p-4">
-            <img src={image} alt={title} className="h-32 w-32 rounded-full" />
-            <h2 className="text-2xl font-semibold">{title}</h2>
-            <p>{description}</p>
-          </div>
+          <section
+            className={`${display === "flex" && flex ? flexStyle : display === "grid" && grid ? gridStyle : ""}`}
+            style={{ ...style, ...dividerStyle }}
+          >
+            <DropZone zone="section" />
+          </section>
         );
       },
     },
