@@ -21,6 +21,8 @@ import {
   DiamondIcon,
   StickyNote,
   RectangleHorizontal,
+  Square,
+  Image,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -54,7 +56,7 @@ const CustomHeader = ({ onPublish }: { onPublish: (data: Data) => void }) => {
         <button
           title="Save"
           className="flex items-center justify-center rounded-xl bg-green-600 p-2 text-white transition hover:bg-green-500"
-          onClick={() => console.log("Save button clicked")}
+          onClick={() => console.log("Data: ", appState.data)}
         >
           <Save size={18} />
           {/* <span className="ml-2 text-sm">Save</span> */}
@@ -216,7 +218,7 @@ const CustomPuck = ({
               </button>
             </div>
           </div>
-          <div id="preview-container" className="flex justify-center">
+          <div id="preview-container" className="flex justify-center mb-8">
             <div
               className="border border-gray-300 bg-white"
               style={{
@@ -243,14 +245,16 @@ const CustomPuck = ({
 };
 
 const componentIcons = {
-  Columns: Columns,
+  Column: Columns,
   Flex: AlignHorizontalJustifyCenter,
-  "Vertical Space": GalleryVertical,
+  Space: GalleryVertical,
   Heading: Heading,
   Text: Type,
-  "Button Group": DiamondIcon,
+  Buttons: DiamondIcon,
   Card: StickyNote,
   Section: RectangleHorizontal,
+  Container: Square,
+  Image: Image,
 };
 
 type ComponentKey = keyof typeof componentIcons;

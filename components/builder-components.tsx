@@ -2,10 +2,29 @@
 import { Config, DropZone } from "@measured/puck";
 import { Key } from "react";
 
+type ButtonProps = {
+  label: string;
+  href: string;
+  bgColor: string;
+  textColor: string;
+  textSize: string;
+  margin: string;
+  padding: string;
+  borderRadius: string;
+  border: string;
+  borderColor: string;
+};
+
 export const config: Config = {
   categories: {
     layout: {
-      components: ["Columns", "Flex", "Vertical Space"],
+      components: [
+        "Section",
+        "Container",
+        "Column",
+        "Flex",
+        "Space",
+      ],
       title: "Layout",
       defaultExpanded: true,
     },
@@ -15,13 +34,13 @@ export const config: Config = {
       defaultExpanded: true,
     },
     actions: {
-      components: ["Button Group"],
+      components: ["Buttons"],
       title: "Actions",
       defaultExpanded: true,
     },
-    other: {
-      components: ["Card", "Section", "Logos"],
-      title: "Other",
+    component: {
+      components: ["Card", "Image"],
+      title: "Components",
       defaultExpanded: true,
     },
   },
@@ -324,7 +343,7 @@ export const config: Config = {
         );
       },
     },
-    Columns: {
+    Column: {
       fields: {
         distribution: {
           type: "radio",
@@ -386,8 +405,62 @@ export const config: Config = {
         );
       },
     },
-
-    "Vertical Space": {
+    Flex: {
+      fields: {
+        gap: {
+          type: "select",
+          label: "Gap",
+          options: [
+            { value: "2", label: "Small" },
+            { value: "4", label: "Medium" },
+            { value: "6", label: "Large" },
+            { value: "8", label: "Extra Large" },
+          ],
+        },
+        minWidth: {
+          type: "number",
+          label: "Minimum Width (px)",
+          min: 0,
+        },
+        zones: {
+          type: "array",
+          label: "Flex Box",
+          getItemSummary: (_, id) => `Flexbox ${id! + 1}`,
+          arrayFields: {
+            name: {
+              type: "text",
+              label: "Flexbox Name",
+            },
+          },
+        },
+      },
+      defaultProps: {
+        gap: "4",
+        minWidth: 356,
+        zones: [{ name: "left" }, { name: "right" }],
+      },
+      render: ({ gap, minWidth, zones }) => {
+        return (
+          <div className={`flex flex-wrap gap-${gap} w-full`}>
+            {zones.map(
+              (zone: { name: string }, index: Key | null | undefined) => (
+                <div
+                  key={index}
+                  style={{
+                    minWidth: `${minWidth}px`,
+                    flexGrow: 1,
+                    flexBasis: `${minWidth}px`,
+                  }}
+                >
+                  <DropZone zone={zone.name || `flexbox-${index}`} />
+                </div>
+              ),
+            )}
+          </div>
+        );
+      },
+    },
+    Space: {
       fields: {
         size: {
           type: "select",
@@ -418,44 +491,36 @@ export const config: Config = {
         return <div className={sizeClass} />;
       },
     },
-    "Button Group": {
+    Buttons: {
       fields: {
-        children: {
-          type: "text",
-          label: "Button Text",
+        buttons: {
+          type: "array",
+          getItemSummary: (item) => item.label || "Button",
+          arrayFields: {
+            label: { type: "text" },
+            href: { type: "text" },
+            bgColor: { type: "text", label: "Background Color (#hex)" },
+            textColor: { type: "text", label: "Text Color (#hex)" },
+            textSize: { type: "text", label: "Text Size (px)" },
+            margin: { type: "text", label: "Margin (px)" },
+            padding: { type: "text", label: "Padding (px)" },
+            borderRadius: { type: "text", label: "Border Radius (px)" },
+            border: { type: "text", label: "Border (px)" },
+            borderColor: { type: "text", label: "Border Color (#hex)" },
+          },
+          defaultItemProps: {
+            label: "Button",
+            href: "#",
+            bgColor: "#000000",
+            textColor: "#FFFFFF",
+            margin: "1px",
+            padding: "2px",
+            borderRadius: "5px",
+            border: "0",
+            borderColor: "#000000",
+          },
         },
-        backgroundColor: {
-          type: "text",
-          label: "Background Color (#hex)",
-        },
-        size: {
-          type: "select",
-          label: "Size",
-          options: [
-            { value: "px-2 py-1", label: "Small" },
-            { value: "px-4 py-2", label: "Medium" },
-            { value: "px-6 py-3", label: "Large" },
-            { value: "px-8 py-4", label: "Extra Large" },
-            { value: "px-10 py-5", label: "2x Large" },
-            { value: "px-12 py-6", label: "3x Large" },
-          ],
-        },
-        textColor: {
-          type: "text",
-          label: "Text Color (#hex)",
-        },
-        borderRadius: {
-          type: "select",
-          label: "Border Radius",
-          options: [
-            { value: "rounded-none", label: "None" },
-            { value: "rounded-sm", label: "Small" },
-            { value: "rounded-md", label: "Medium" },
-            { value: "rounded-lg", label: "Large" },
-            { value: "rounded-full", label: "Full" },
-          ],
-        },
-        alignment: {
+        align: {
           type: "radio",
           label: "Alignment",
           options: [
@@ -466,41 +531,46 @@ export const config: Config = {
         },
       },
       defaultProps: {
-        children: "Button",
-        backgroundColor: "#000000",
-        size: "px-4 py-2",
-        textColor: "#ffffff",
-        borderRadius: "rounded-md",
-        alignment: "left",
+        buttons: [
+          {
+            label: "Submit",
+            href: "#",
+            bgColor: "#000000",
+            textColor: "#FFFFFF",
+            textSize: "10px",
+            margin: "10px",
+            padding: "10px 20px",
+            borderRadius: "30px",
+            border: "1px",
+            borderColor: "#00FF00",
+          },
+        ],
       },
-      render: ({
-        children,
-        backgroundColor,
-        size,
-        textColor,
-        borderRadius,
-        alignment,
-      }: {
-        children: string;
-        backgroundColor: string;
-        size: string;
-        textColor: string;
-        borderRadius: string;
-        alignment: string;
-      }) => {
-        const buttonStyle = {
-          backgroundColor: backgroundColor,
-          color: textColor,
-        };
-        const containerClassName = `flex ${alignment === "center" ? "justify-center" : alignment === "right" ? "justify-end" : "justify-start"}`;
-        const buttonClassName = `${size} ${borderRadius}`;
-
+      render: ({ buttons, align, puck }) => {
+        const buttonStyle = (button: ButtonProps) => ({
+          backgroundColor: button.bgColor,
+          color: button.textColor,
+          margin: `${button.margin}`,
+          padding: `${button.padding}`,
+          borderRadius: `${button.borderRadius}`,
+          border: `${button.border} solid ${button.borderColor}`,
+          fontSize: `${button.textSize}`,
+        });
         return (
-          <div className={containerClassName}>
-            <button className={buttonClassName} style={buttonStyle}>
-              {children}
-            </button>
-          </div>
+          <section className={`flex justify-${align}`}>
+            <div className="">
+              {buttons.map((button: ButtonProps, i: Key | null | undefined) => (
+                <button
+                  key={i}
+                  onClick={() => (window.location.href = button.href)}
+                  tabIndex={puck.isEditing ? -1 : undefined}
+                  style={buttonStyle(button)}
+                >
+                  {button.label}
+                </button>
+              ))}
+            </div>
+          </section>
         );
       },
     },
@@ -825,6 +895,496 @@ export const config: Config = {
             <DropZone zone="section" />
           </section>
         );
+      },
+    },
+    Container: {
+      fields: {
+        display: {
+          type: "select",
+          label: "Display",
+          options: [
+            { value: "block", label: "Block" },
+            { value: "flex", label: "Flex" },
+            { value: "grid", label: "Grid" },
+            { value: "inline", label: "Inline" },
+            { value: "inline-block", label: "Inline Block" },
+          ],
+        },
+        width: {
+          type: "text",
+          label: "Width",
+        },
+        height: {
+          type: "text",
+          label: "Height",
+        },
+        alignment: {
+          type: "radio",
+          label: "Alignment",
+          options: [
+            { value: "left", label: "Left" },
+            { value: "center", label: "Center" },
+            { value: "right", label: "Right" },
+          ],
+        },
+        margin: {
+          type: "object",
+          label: "Margin (px)",
+          objectFields: {
+            top: { type: "number", label: "Top" },
+            right: { type: "number", label: "Right" },
+            bottom: { type: "number", label: "Bottom" },
+            left: { type: "number", label: "Left" },
+          },
+        },
+        padding: {
+          type: "object",
+          label: "Padding (px)",
+          objectFields: {
+            top: { type: "number", label: "Top" },
+            right: { type: "number", label: "Right" },
+            bottom: { type: "number", label: "Bottom" },
+            left: { type: "number", label: "Left" },
+          },
+        },
+        overflow: {
+          type: "select",
+          label: "Overflow",
+          options: [
+            { value: "visible", label: "Visible" },
+            { value: "hidden", label: "Hidden" },
+            { value: "scroll", label: "Scroll" },
+            { value: "auto", label: "Auto" },
+          ],
+        },
+        backgroundColor: {
+          type: "text",
+          label: "Background Color (#hex)",
+        },
+        backgroundImage: {
+          type: "text",
+          label: "Background Image URL",
+        },
+        borderRadius: {
+          type: "number",
+          label: "Border Radius (px)",
+        },
+        boxShadow: {
+          type: "text",
+          label: "Box Shadow",
+        },
+        position: {
+          type: "select",
+          label: "Position",
+          options: [
+            { value: "static", label: "Static" },
+            { value: "relative", label: "Relative" },
+            { value: "absolute", label: "Absolute" },
+            { value: "fixed", label: "Fixed" },
+            { value: "sticky", label: "Sticky" },
+          ],
+        },
+        zIndex: {
+          type: "number",
+          label: "Z-Index",
+        },
+        divider: {
+          type: "object",
+          label: "Divider",
+          objectFields: {
+            show: {
+              type: "radio",
+              label: "Show Divider",
+              options: [
+                { value: true, label: "Yes" },
+                { value: false, label: "No" },
+              ],
+            },
+            color: { type: "text", label: "Divider Color (#hex)" },
+            thickness: { type: "number", label: "Divider Thickness (px)" },
+          },
+        },
+      },
+      resolveFields: async (data, { fields }) => {
+        if (data.props.display === "flex") {
+          return {
+            flex: {
+              type: "object",
+              label: "Flex",
+              objectFields: {
+                flexWrap: {
+                  type: "radio",
+                  label: "Flex Wrap",
+                  options: [
+                    { value: "flex-nowrap", label: "No Wrap" },
+                    { value: "flex-wrap", label: "Wrap" },
+                    { value: "flex-wrap-reverse", label: "Wrap Reverse" },
+                  ],
+                },
+                direction: {
+                  type: "radio",
+                  label: "Direction",
+                  options: [
+                    { value: "flex-row", label: "Row" },
+                    { value: "flex-row-reverse", label: "Row Reverse" },
+                    { value: "flex-column", label: "Column" },
+                    { value: "flex-column-reverse", label: "Column Reverse" },
+                  ],
+                },
+                alignItems: {
+                  type: "select",
+                  label: "Align Items",
+                  options: [
+                    { value: "flex-start", label: "Start" },
+                    { value: "flex-end", label: "End" },
+                    { value: "center", label: "Center" },
+                    { value: "baseline", label: "Baseline" },
+                    { value: "stretch", label: "Stretch" },
+                  ],
+                },
+                justifyItems: {
+                  type: "select",
+                  label: "Justify Items",
+                  options: [
+                    { value: "flex-start", label: "Start" },
+                    { value: "flex-end", label: "End" },
+                    { value: "center", label: "Center" },
+                    { value: "space-between", label: "Space Between" },
+                    { value: "space-around", label: "Space Around" },
+                    { value: "space-evenly", label: "Space Evenly" },
+                  ],
+                },
+                flexGrow: {
+                  type: "number",
+                  label: "Grow",
+                  min: 0,
+                },
+                flexShrink: {
+                  type: "number",
+                  label: "Shrink",
+                  min: 0,
+                },
+                columnGap: {
+                  type: "number",
+                  label: "Column Gap",
+                  min: 0,
+                },
+                rowGap: {
+                  type: "number",
+                  label: "Row Gap",
+                  min: 0,
+                },
+              },
+            },
+            ...fields,
+          };
+        } else if (data.props.display === "grid") {
+          return {
+            grid: {
+              type: "object",
+              label: "Grid",
+              objectFields: {
+                templateColumns: {
+                  type: "text",
+                  label: "Template Columns",
+                },
+                templateRows: {
+                  type: "text",
+                  label: "Template Rows",
+                },
+                gap: {
+                  type: "number",
+                  label: "Gap",
+                  min: 0,
+                },
+              },
+            },
+            ...fields,
+          };
+        }
+        return fields;
+      },
+      defaultProps: {
+        display: "block",
+        margin: { top: 20, right: 0, bottom: 20, left: 0 },
+        padding: { top: 15, right: 15, bottom: 15, left: 15 },
+        width: "100%",
+        height: "auto",
+        overflow: "visible",
+        backgroundColor: "#FFFFFF",
+        backgroundImage: "",
+        borderRadius: 0,
+        boxShadow: "none",
+        position: "static",
+        zIndex: 0,
+        divider: {
+          show: false,
+          color: "#000000",
+          thickness: 1,
+        },
+        alignment: "center",
+      },
+      render: ({
+        title,
+        children,
+        display,
+        margin,
+        padding,
+        width,
+        height,
+        overflow,
+        backgroundColor,
+        backgroundImage,
+        borderRadius,
+        boxShadow,
+        position,
+        zIndex,
+        divider,
+        flex,
+        grid,
+        alignment,
+      }) => {
+        const sectionStyle = {
+          width: "calc(100%)",
+          display: "flex",
+          justifyContent:
+            alignment === "center"
+              ? "center"
+              : alignment === "right"
+                ? "flex-end"
+                : "flex-start",
+        };
+
+        const style = {
+          display,
+          width: `${width}`,
+          maxWidth: "95%",
+          marginTop: `${margin.top}px`,
+          marginRight: `${margin.right}px`,
+          marginBottom: `${margin.bottom}px`,
+          marginLeft: `${margin.left}px`,
+          paddingTop: `${padding.top}px`,
+          paddingRight: `${padding.right}px`,
+          paddingBottom: `${padding.bottom}px`,
+          paddingLeft: `${padding.left}px`,
+          height,
+          overflow,
+          backgroundColor,
+          backgroundImage: backgroundImage ? `url(${backgroundImage})` : "none",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          borderRadius: `${borderRadius}px`,
+          boxShadow,
+          position,
+          zIndex,
+        };
+
+        let flexStyle = "";
+        let gridStyle = "";
+        if (display === "flex" && flex) {
+          flexStyle = `flex ${flex.flexWrap} ${flex.direction} ${flex.alignItems} ${flex.justifyItems} ${flex.flexGrow} ${flex.flexShrink} ${flex.columnGap} ${flex.rowGap}`;
+        } else if (display === "grid" && grid) {
+          gridStyle = `grid ${grid.templateColumns} ${grid.templateRows} ${grid.gap}`;
+        }
+
+        const dividerStyle = divider.show
+          ? { borderBottom: `${divider.thickness}px solid ${divider.color}` }
+          : {};
+
+        return (
+          <section style={sectionStyle}>
+            <div
+              className={`${display === "flex" && flex ? flexStyle : display === "grid" && grid ? gridStyle : ""}`}
+              style={{ ...style, ...dividerStyle }}
+            >
+              <DropZone zone="div" />
+            </div>
+          </section>
+        );
+      },
+    },
+    Image: {
+      fields: {
+        link: {
+          type: "text",
+          label: "Link URL",
+        },
+        imageUrl: {
+          type: "text",
+          label: "Select Image",
+        },
+        // imageUpload: {
+        //   type: "external",
+        //   label: "Upload Image",
+        //   fetchList: async () => {
+        //     return fetch("/api/images")
+        //       .then((res) => res.json())
+        //       .then((data) => data.slice(0, 10));
+        //   }
+        // },
+        width: {
+          type: "text",
+          label: "Width (% or px)",
+        },
+        height: {
+          type: "text",
+          label: "Height",
+        },
+        margin: {
+          type: "text",
+          label: "Margin (px)",
+        },
+        padding: {
+          type: "text",
+          label: "Padding (px)",
+        },
+        altText: {
+          type: "text",
+          label: "Alt Text",
+        },
+        alignment: {
+          type: "radio",
+          label: "Image Alignment",
+          options: [
+            { value: "left", label: "Left" },
+            { value: "center", label: "Center" },
+            { value: "right", label: "Right" },
+          ],
+        },
+        objectFit: {
+          type: "select",
+          label: "Object Fit",
+          options: [
+            { value: "fill", label: "Fill" },
+            { value: "contain", label: "Contain" },
+            { value: "cover", label: "Cover" },
+            { value: "none", label: "None" },
+            { value: "scale-down", label: "Scale Down" },
+          ],
+        },
+        objectPosition: {
+          type: "select",
+          label: "Object Position",
+          options: [
+            { value: "top", label: "Top" },
+            { value: "right", label: "Right" },
+            { value: "bottom", label: "Bottom" },
+            { value: "left", label: "Left" },
+            { value: "center", label: "Center" },
+          ],
+        },
+        aspectRatio: {
+          type: "radio",
+          label: "Aspect Ratio",
+          options: [
+            { value: "auto", label: "Auto" },
+            { value: "1/1", label: "1:1" },
+            { value: "4/3", label: "4:3" },
+            { value: "16/9", label: "16:9" },
+            { value: "21/9", label: "21:9" },
+          ],
+        },
+        border: {
+          type: "object",
+          label: "Image Border",
+          objectFields: {
+            width: { type: "number", label: "Width (px)" },
+            style: {
+              type: "select",
+              label: "Style",
+              options: [
+                { value: "none", label: "None" },
+                { value: "solid", label: "Solid" },
+                { value: "dashed", label: "Dashed" },
+                { value: "dotted", label: "Dotted" },
+              ],
+            },
+            color: { type: "text", label: "Color (#hex)" },
+          },
+        },
+        borderRadius: {
+          type: "number",
+          label: "Border Radius (px)",
+        },
+        boxShadow: {
+          type: "text",
+          label: "Box Shadow (px, #hex)",
+        },
+      },
+      defaultProps: {
+        link: "",
+        imageUrl: "",
+        border: { width: 0, style: "none", color: "#000000" },
+        borderRadius: 0,
+        boxShadow: "5px 5px 5px 5px #ffffff",
+        width: "500px",
+        height: "auto",
+        margin: "0px",
+        padding: "0px",
+        altText: "",
+        alignment: "center",
+        objectFit: "cover",
+        objectPosition: "center",
+        aspectRatio: "auto",
+      },
+      render: ({
+        link,
+        imageUrl,
+        border,
+        borderRadius,
+        boxShadow,
+        width,
+        height,
+        margin,
+        padding,
+        altText,
+        objectFit,
+        objectPosition,
+        aspectRatio,
+        alignment,
+      }) => {
+        const imageStyle = {
+          width,
+          height,
+          margin: `${margin}px`,
+          padding: `${padding}px`,
+          border: `${border.width}px ${border.style} ${border.color}`,
+          borderRadius: `${borderRadius}`,
+          boxShadow,
+          objectFit,
+          objectPosition,
+          aspectRatio,
+          alignSelf: alignment,
+        };
+
+        const containerStyle = {
+          display: "flex",
+          justifyContent:
+            alignment === "center"
+              ? "center"
+              : alignment === "right"
+                ? "flex-end"
+                : "flex-start",
+          width: "100%",
+        };
+
+        const ImageElement = (
+          <img src={imageUrl} alt={altText} style={imageStyle} />
+        );
+
+        const AlignedImage = (
+          <div style={containerStyle}>
+            {link ? (
+              <a href={link} target="_blank" rel="noopener noreferrer">
+                {ImageElement}
+              </a>
+            ) : (
+              ImageElement
+            )}
+          </div>
+        );
+
+        return AlignedImage;
       },
     },
   },
